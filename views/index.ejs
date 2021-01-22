@@ -1,0 +1,42 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    
+    <style>
+        body h1{
+            text-align: center;
+            color: blueviolet;
+        }
+        form input,button{
+            display: block;
+            margin: auto;
+            padding: 7px;
+            margin-bottom: 5px;
+
+        }
+        input{
+            width: 40%;
+        }
+    </style>
+    <title>Chat Room</title>
+    <script defer src="http://localhost:3000/socket.io/socket.io.js"></script>
+    <script defer src="index.js"></script>
+</head>
+<body>
+    <h1>Create Room</h1>
+    <form action="/room" method="post" id="Room">
+        <input type="text" name="room" id="roomName" placeholder="Room name" required>
+        <input type="password" name="roomPassword" id="roomPassword" placeholder="Room password" required>
+        <button type="submit" id="btn">submit now</button>
+    </form>
+    <div id="room-container">
+        <% Object.keys(rooms).forEach(room =>{%>
+            <div><%= room %></div>
+            <a href="/<%= room %>">join</a>
+        <% }) %>
+    </div>
+    
+</body>
+</html>
