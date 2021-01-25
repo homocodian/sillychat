@@ -38,7 +38,7 @@ app.use(express.urlencoded({ extended: true }))
 const rooms = {}
 // rendering home page
 app.get('/', (req, res) => {
-    res.render('index', { rooms: rooms });
+    res.render('RoomCreator', { rooms: rooms });
 });
 // rendering login page
 app.get('/login',(req,res)=>{
@@ -58,7 +58,7 @@ app.post('/room', (req, res) => {
     roomdata.save();
     res.redirect(req.body.room)
     // send message
-    io.emit('room-created', req.body.room);
+    // io.emit('room-created', req.body.room);
 });
 app.get('/:room', (req, res) => {
     if (rooms[req.params.room] == null) {
@@ -111,6 +111,7 @@ io.on('connection', (socket) => {
                     if (err) {
                         console.log(err);
                     } else {
+                        console.log(`${room} successfully removed`);
                         delete rooms[room]
                     }
                 })
