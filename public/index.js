@@ -5,7 +5,7 @@ const messageinput = document.getElementById('message-input');
 const roomContainer = document.getElementById('room-container');
 const broadcast = document.querySelector('.message-container');
 
-var audio = new Audio('../public/Receive.mp3');
+var audio = new Audio('Receive.mp3');
 
 // append function 
 const append = (message, position) => {
@@ -35,19 +35,21 @@ if (broadcast != null) {
         append(`You: ${message}`, 'right');
         socket.emit('send', roomName,message);
         messageinput.value = '';
+        const messageBox = document.querySelector('.emojionearea-editor');
+        messageBox.innerHTML = "";
     });
 }
 
-socket.on('room-created',room =>{
-    const roomElement = document.createElement('div');
-    roomElement.innertext = room;
-    const roomLink = document.createElement('a');
-    roomLink.classList.add("room-join");
-    roomLink.href = `/${room}`;
-    roomLink.innerText = 'join'
-    roomContainer.append(roomElement);
-    roomContainer.append(roomLink);
-});
+// socket.on('room-created',room =>{
+//     const roomElement = document.createElement('div');
+//     roomElement.innertext = room;
+//     const roomLink = document.createElement('a');
+//     roomLink.classList.add("room-join");
+//     roomLink.href = `/${room}`;
+//     roomLink.innerText = 'join'
+//     roomContainer.append(roomElement);
+//     roomContainer.append(roomLink);
+// });
 
 socket.on('user-joined', name => {
     append(`${name} joined the chat`, 'right');
