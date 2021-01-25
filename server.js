@@ -104,17 +104,20 @@ io.on('connection', (socket) => {
             socket.to(room).broadcast.emit('left', rooms[room].users[socket.id])
             delete rooms[room].users[socket.id];
             if (Object.keys(rooms[room].users).length === 0) {
-                const droom = {
-                    room:room
-                }
-                roominfo.deleteOne(droom,(err)=>{
-                    if (err) {
-                        console.log(err);
-                    } else {
-                        console.log(`${room} successfully removed`);
-                        delete rooms[room]
+                console.log('Room deletion process initiated');
+                setTimeout(() => {
+                    const droom = {
+                        room:room
                     }
-                })
+                    roominfo.deleteOne(droom,(err)=>{
+                        if (err) {
+                            console.log(err);
+                        } else {
+                            console.log(`${room} successfully removed!`);
+                            delete rooms[room]
+                        }
+                    })
+                }, 5000);
             }
         })
     })

@@ -33,7 +33,7 @@ if (broadcast != null) {
         e.preventDefault();
         const message = messageinput.value;
         append(`You: ${message}`, 'right');
-        socket.emit('send', roomName,message);
+        socket.emit('send', roomName,message,broadcast.scrollTop = broadcast.scrollHeight);
         messageinput.value = '';
         const messageBox = document.querySelector('.emojionearea-editor');
         messageBox.innerHTML = "";
@@ -57,6 +57,7 @@ socket.on('user-joined', name => {
 
 socket.on('receive', data => {
     append(`${data.name} : ${data.message}`, 'left');
+    broadcast.scrollTop = broadcast.scrollHeight;
 });
 
 socket.on('left', name => {
