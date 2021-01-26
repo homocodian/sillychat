@@ -1,0 +1,96 @@
+*{
+    margin: 0px;
+    padding: 0px;
+}
+#navbar{
+    background: green;
+    display: flex;
+    align-items: center;
+    padding: 13px 0px;
+    padding-left: 40px;
+    border-bottom-left-radius: 63px;
+    border-bottom-right-radius: 63px;
+}
+
+#navbar::before{
+    background-color: skyblue;
+    content: "";
+    position: absolute;
+    top:0;
+    left: 0;
+    width: 100%;
+    height: 100%;
+    z-index: -1;
+}
+
+#navbar ul{
+    display: flex;
+    padding-left: 8px;
+}
+
+#navbar li{
+    list-style: none;
+}
+
+#navbar li a{
+    text-decoration: none;
+    padding: 0px 12px;
+    font-size: 20px;
+    color: white;
+    font-family:'Franklin Gothic Medium', 'Arial Narrow', Arial, sans-serif;
+}
+.container{
+    background-color: skyblue;
+    height: 100vh;
+    width: 100vw;
+    display: flex;
+    justify-content: center;
+    align-items: center;
+}
+#room-box{
+    display: flex;
+    flex-direction: column;
+    background-color:whitesmoke;
+    height: 386px;
+    width: 329px;
+    border-radius: 10px;
+    border-bottom-right-radius: revert;
+    border-bottom-left-radius:revert;
+}
+#room-box h2{
+    background-color: green;
+    color: white;
+    text-align: center;
+    font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+    padding: 14px 0px;
+    border-top-right-radius: inherit;
+    border-top-left-radius: inherit;
+    margin-bottom: 65px;
+}
+#room-box input{
+    outline: none;
+    border: none;
+    padding: 10px;
+    padding-left: 20px;
+    border-radius: 20px;
+    margin: 10px 40px;
+}
+#room-box input::placeholder{
+    color: black;
+}
+#room-name{
+    margin-top: 30px;
+}
+#creat-room-btn{
+    outline: none;
+    border: none;
+    padding: 10px;
+    border-radius: 20px;
+    margin: 10px 40px;
+    background-color: #80808063;
+    cursor: pointer;
+}
+
+
+
+

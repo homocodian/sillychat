@@ -1,0 +1,42 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <link rel="stylesheet" href="Create and login page.css">
+    <title>Room Login</title>
+</head>
+
+<body>
+    <nav id="navbar">
+        <ul>
+            <li>
+                <a href="/">Create Room</a>
+            </li>
+            <li>
+                <a href="/login">Join Room</a>
+            </li>
+            <li>
+                <a href="">About</a>
+            </li>
+            <li>
+                <a href="">Feedback</a>
+            </li>
+            <li>
+                <a href="">Contact</a>
+            </li>
+        </ul>
+    </nav>
+    <div class="container">
+        <form action="/findroom" method="post" id="room-box">
+            <h2>Join Private Chat Room</h2>
+            <input type="text" name="room"
+            id="room-name" placeholder="Name" required>
+            <input type="password" name="roomPassword" id="room-pass" placeholder="Password" required>
+            <button type='submit' id='creat-room-btn'>Create Room</button>
+        </form>
+    </div>
+</body>
+
+</html>

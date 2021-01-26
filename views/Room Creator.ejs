@@ -1,0 +1,49 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <link rel="stylesheet" href="Create and login page.css">
+    <title>Chat Room</title>
+    <script defer src="http://localhost:3000/socket.io/socket.io.js"></script>
+    <script defer src="index.js"></script>
+</head>
+
+<body>
+    <nav id="navbar">
+        <ul>
+            <li>
+                <a href="/">Create Room</a>
+            </li>
+            <li>
+                <a href="/login">Join Room</a>
+            </li>
+            <li>
+                <a href="">About</a>
+            </li>
+            <li>
+                <a href="">Feedback</a>
+            </li>
+            <li>
+                <a href="">Contact</a>
+            </li>
+        </ul>
+    </nav>
+    <div class="container">
+        <form action="/room" method="post" id="room-box">
+            <h2>Create Private Chat Room</h2>
+            <input type="text" name="room" id="room-name" placeholder="Name" required>
+            <input type="password" name="roomPassword" id="room-pass" placeholder="Password" required>
+            <button type='submit' id='creat-room-btn'>Create Room</button>
+        </form>
+    </div>
+    <!-- <div id="room-container">
+        <% Object.keys(rooms).forEach(room =>{%>
+            <div><%= room %></div>
+            <a href="/<%= room %>">join</a>
+        <% }) %>
+    </div> -->
+</body>
+
+</html>
