@@ -6,8 +6,6 @@
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <link rel="stylesheet" href="Create and login page.css">
     <title>Chat Room</title>
-    <script defer src="http://localhost:3000/socket.io/socket.io.js"></script>
-    <script defer src="index.js"></script>
 </head>
 
 <body>
@@ -35,15 +33,29 @@
             <h2>Create Private Chat Room</h2>
             <input type="text" name="room" id="room-name" placeholder="Name" required>
             <input type="password" name="roomPassword" id="room-pass" placeholder="Password" required>
-            <button type='submit' id='creat-room-btn'>Create Room</button>
+            <button type='submit' id='create-room-btn'>Create Room</button>
         </form>
     </div>
-    <!-- <div id="room-container">
-        <% Object.keys(rooms).forEach(room =>{%>
-            <div><%= room %></div>
-            <a href="/<%= room %>">join</a>
-        <% }) %>
-    </div> -->
+    <script>
+        const password = document.getElementById('room-pass');
+        const roomCreatorButton = document.getElementById('create-room-btn');
+
+        roomCreatorButton.addEventListener('click',(e)=>{
+            if (password.value == "Password") {
+                alert("Password can not be password")
+                e.preventDefault();
+            }
+            else if (password.value == "password"){
+                alert("Password can not be password")
+                e.preventDefault();
+            }
+            if (password.value.length < 8) {
+                alert("Password must be longer than 8 digit and use symbols and capital letter");
+                e.preventDefault();
+            }
+        })
+        
+    </script>
 </body>
 
 </html>

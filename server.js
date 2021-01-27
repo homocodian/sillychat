@@ -116,11 +116,12 @@ app.post('/findroom',(req,res)=>{
         password : req.body.roomPassword,
     }
     roominfo.find(getdata,(err,data)=>{
+        console.log(`data from db : ${data}`);
         if (err) {
             console.log(err);
         }
         if (data == "") {
-            return res.redirect('/Login page')
+            return res.redirect('/Login page');
         }
         res.redirect(req.body.room)
     })
