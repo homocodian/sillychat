@@ -1,0 +1,50 @@
+html,body{
+    background-color: rgb(223, 222, 220);
+}
+.message-container{
+    background-color: whitesmoke;
+    height: 500px;
+    width: 700px;
+    border-radius: 8px;
+    margin: auto;
+    margin-top: 40px;
+    overflow-y: auto;
+}
+.message{
+    width: 30%;
+    background-color: rgb(182, 206, 250);
+    border-radius: 5px;
+    margin: 14px 12px;
+    padding: 7px 10px;
+}
+.left{
+    float: left;
+    clear: both;
+}
+.right{
+    float: right;
+    clear: both;
+}
+#text-mess{
+    display: flex;
+    justify-content: center;
+}
+#message-input{
+    width: 500px;
+    padding: 8px 10px;
+    outline: none;
+    border: none;
+    margin-top: 10px;
+}
+#btn{
+    margin-top: 10px;
+    border-radius: 3px;
+    outline: none;
+    border: none;
+    cursor: pointer;
+    border: 2px solid skyblue;
+}
+.emojionearea, .emojionearea.form-control {
+    width: 50%;
+    margin-top: 10px;
+}
