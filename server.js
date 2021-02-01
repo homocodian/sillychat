@@ -1,6 +1,7 @@
+
 // getting express
 const express = require('express');
-
+const bcrypt = require('bcrypt');
 
 // getting mongoose for database entries  
 const mongoose = require('mongoose');
@@ -24,15 +25,13 @@ db.once('open', function () {
 
 
 // making schema
-const roomdata = new mongoose.Schema({
+const roomDataScheme = new mongoose.Schema({
     room: String,
     password: String,
 });
 
-
 // converting schema into model to use it in db
-const roominfo = mongoose.model('roomdata', roomdata);
-
+const roomInfo = mongoose.model('roomdata', roomDataScheme);
 
 // announcing it as express app
 const app = express();
@@ -58,9 +57,9 @@ app.set('view engine', 'ejs');
 app.use(express.static('public'));
 
 
+
 // getting values from client sites
 app.use(express.urlencoded({ extended: true }))
-
 
 // room varible to handle rooms
 const rooms = {}
@@ -68,39 +67,48 @@ const rooms = {}
 
 // rendering home page
 app.get('/', (req, res) => {
-    console.log('welcome to our home page');
     res.render('Room Creator', { rooms: rooms });
 });
 
 
 // rendering login page
-app.get('/login',(req,res)=>{
+app.get('/login', (req, res) => {
     console.log('Welcome to our login page');
     res.render('Login page');
 });
 
 
 // posting room page,getting values from client site and saving room datas into database
-app.post('/room', (req, res) => {
-    console.log('Logging info in out database...');
+app.post('/room', async (req, res) => {
     if (rooms[req.body.room] != null) {
         return res.redirect('/')
     }
     rooms[req.body.room] = { users: {} }
-    const data = {
-        room : req.body.room,
-        password : req.body.roomPassword,
+    try {
+        const hashedpassword = await bcrypt.hash(req.body.roomPassword, 10);
+        const logData = {
+            room: req.body.room,
+            password: hashedpassword,
+        }
+        const roomData = new roomInfo(logData);
+        try {
+            roomData.save();
+            res.redirect(req.body.room)
+        } catch (error) {
+            console.log(error);
+        }
+
+    } catch {
+        console.log('Error while saving data in database');
+        res.redirect('/');
     }
-    const roomdata = new roominfo(data);
-    roomdata.save();
-    res.redirect(req.body.room)
+
     // send message
     // io.emit('room-created', req.body.room);
 });
 
 
 app.get('/:room', (req, res) => {
-    console.log(`redirecting to chatroom: ${req.params.room}`);
     if (rooms[req.params.room] == null) {
         return res.redirect('/')
     }
@@ -109,24 +117,36 @@ app.get('/:room', (req, res) => {
 
 
 // serving rooms and finding in databse 
-app.post('/findroom',(req,res)=>{
-    console.log(`searching room : ${req.body.room}`);
-    const getdata ={
-        room : req.body.room,
-        password : req.body.roomPassword,
-    }
-    roominfo.find(getdata,(err,data)=>{
-        console.log(`data from db : ${data}`);
-        if (err) {
-            console.log(err);
-        }
-        if (data == "") {
-            return res.redirect('/Login page');
-        }
-        res.redirect(req.body.room)
-    })
+app.post('/findroom', getRoom ,(req,res)=>{
+    
 })
 
+function getRoom(req, res, next) {
+    const getRoomByName = {
+        room: req.body.room
+    }
+    roomInfo.findOne(getRoomByName, async(err, data) => {
+        if (err) {
+            console.log(err);
+        } else {
+            try {
+                const match = await bcrypt.compare(req.body.roomPassword, data['password']);
+
+                if (match) {
+                    //login
+                    res.redirect(req.body.room)
+                }
+                else {
+                    res.redirect('/login')
+                }
+
+            } catch (error) {
+                res.redirect('/')
+            }
+        }
+    })
+    next()
+}
 
 // making server
 server.listen(3000, () => {
@@ -144,7 +164,6 @@ io.on('connection', (socket) => {
     });
 
 
-
     // sending and receiving message
     socket.on('send', (room, message) => {
         socket.to(room).broadcast.emit('receive', { message: message, name: rooms[room].users[socket.id] })
@@ -160,10 +179,10 @@ io.on('connection', (socket) => {
             if (Object.keys(rooms[room].users).length === 0) {
                 console.log('Room deletion process initiated');
                 setTimeout(() => {
-                    const droom = {
-                        room:room
+                    const deleteRoom = {
+                        room: room
                     }
-                    roominfo.deleteOne(droom,(err)=>{
+                    roomInfo.deleteOne(deleteRoom, (err) => {
                         if (err) {
                             console.log(err);
                         } else {
