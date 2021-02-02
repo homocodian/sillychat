@@ -28,6 +28,23 @@
             </li>
         </ul>
     </nav>
+    <% if(roomExistence.length > 0) { %>
+        <div>
+            <%= roomExistence%>
+        </div>
+    <% }%>
+
+    <% if(findingError.length > 0) { %>
+        <div>
+            <%= findingError%>
+        </div>
+    <% }%>
+    
+    <% if(roomDoesNotExist.length > 0) { %>
+        <div>
+            <%= roomDoesNotExist%>
+        </div>
+    <% }%>
     <div class="container">
         <form action="/room" method="post" id="room-box">
             <h2>Create Private Chat Room</h2>

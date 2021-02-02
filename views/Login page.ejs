@@ -28,6 +28,18 @@
             </li>
         </ul>
     </nav>
+    <% if(authentication.length > 0) { %>
+        <div>
+            <%= authentication%>
+        </div>
+    <% }%>
+    
+    <% if(incorrect.length > 0) { %>
+        <div>
+            <%= incorrect%>
+        </div>
+    <% }%>
+    
     <div class="container">
         <form action="/findroom" method="post" id="room-box">
             <h2>Join Private Chat Room</h2>

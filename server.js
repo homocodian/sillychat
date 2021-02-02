@@ -1,10 +1,12 @@
-
 // getting express
 const express = require('express');
 const bcrypt = require('bcrypt');
+const expressSession = require('express-session');
+const flash = require('connect-flash');
 
 // getting mongoose for database entries  
 const mongoose = require('mongoose');
+const { request } = require('http');
 
 
 // setting connection with mongo database
@@ -60,6 +62,13 @@ app.use(express.static('public'));
 
 // getting values from client sites
 app.use(express.urlencoded({ extended: true }))
+app.use(expressSession({
+    secret:'This is amazing because it is developed by kratosTheCoder',
+    resave:false,
+    saveUninitialized:false,
+    cookie:{ maxAge : 60000}
+}))
+app.use(flash());
 
 // room varible to handle rooms
 const rooms = {}
@@ -68,20 +77,20 @@ var authenticate = false;
 
 // rendering home page
 app.get('/', (req, res) => {
-    res.render('Room Creator', { rooms: rooms });
+    res.render('Room Creator',{ rooms: rooms, findingError:req.flash('errFinding'), roomDoesNotExist:req.flash('roomDoesNotExist'), roomExistence:req.flash('roomExist')});
 });
 
 
 // rendering login page
 app.get('/login', (req, res) => {
-    console.log('Welcome to our login page');
-    res.render('Login page');
+    res.render('Login page',
+    { authentication:req.flash('reqAuthentication'),incorrect:req.flash('incorrectPassword')});
 });
-
 
 // posting room page,getting values from client site and saving room datas into database
 app.post('/room', async (req, res) => {
     if (rooms[req.body.room] != null) {
+        req.flash('roomExist','Given room name already exists!')
         return res.redirect('/')
     }
     rooms[req.body.room] = { users: {} }
@@ -111,12 +120,14 @@ app.post('/room', async (req, res) => {
 
 app.get('/:room',(req, res) => {
     if (rooms[req.params.room] == null) {
+        req.flash('roomDoesNotExist','Given room name does not exists!');
         return res.redirect('/')
     }
     if (authenticate === true) {
         authenticate = false;
         res.render('room', { roomName: req.params.room });
     } else {
+        req.flash('reqAuthentication','Please authenticate yourself by entering room name and password!');
         res.redirect('/login');
     }
 });
@@ -139,18 +150,17 @@ function getRoom(req, res, next) {
                 const match = await bcrypt.compare(req.body.roomPassword, data['password']);
 
                 if (match) {
-                    //login
-                    console.log(authenticate);
                     authenticate = true;
-                    console.log(authenticate);
                     res.redirect(req.body.room)
                 }
                 else {
+                    req.flash('incorrectPassword','Given password was incorrect!')
                     res.redirect('/login')
                 }
 
             } catch (error) {
-                res.redirect('/')
+                req.flash('errFinding','Error while finding room or it did not exist!');
+                res.redirect('/');
             }
         }
     })
