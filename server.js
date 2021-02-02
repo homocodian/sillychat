@@ -63,6 +63,7 @@ app.use(express.urlencoded({ extended: true }))
 
 // room varible to handle rooms
 const rooms = {}
+var authenticate = false;
 
 
 // rendering home page
@@ -108,11 +109,16 @@ app.post('/room', async (req, res) => {
 });
 
 
-app.get('/:room', (req, res) => {
+app.get('/:room',(req, res) => {
     if (rooms[req.params.room] == null) {
         return res.redirect('/')
     }
-    res.render('room', { roomName: req.params.room });
+    if (authenticate === true) {
+        authenticate = false;
+        res.render('room', { roomName: req.params.room });
+    } else {
+        res.redirect('/login');
+    }
 });
 
 
@@ -134,6 +140,9 @@ function getRoom(req, res, next) {
 
                 if (match) {
                     //login
+                    console.log(authenticate);
+                    authenticate = true;
+                    console.log(authenticate);
                     res.redirect(req.body.room)
                 }
                 else {
@@ -147,6 +156,7 @@ function getRoom(req, res, next) {
     })
     next()
 }
+
 
 // making server
 server.listen(3000, () => {
@@ -166,6 +176,7 @@ io.on('connection', (socket) => {
 
     // sending and receiving message
     socket.on('send', (room, message) => {
+        // console.log(message);
         socket.to(room).broadcast.emit('receive', { message: message, name: rooms[room].users[socket.id] })
     });
 
