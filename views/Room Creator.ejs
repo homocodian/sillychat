@@ -5,6 +5,8 @@
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <link rel="stylesheet" href="Create and login page.css">
+    <link rel="preconnect" href="https://fonts.gstatic.com">
+    <link href="https://fonts.googleapis.com/css2?family=Noto+Sans:wght@700&family=Yusei+Magic&display=swap" rel="stylesheet">
     <title>Chat Room</title>
 </head>
 
@@ -29,19 +31,19 @@
         </ul>
     </nav>
     <% if(roomExistence.length > 0) { %>
-        <div>
+        <div class="alert">
             <%= roomExistence%>
         </div>
     <% }%>
 
     <% if(findingError.length > 0) { %>
-        <div>
+        <div class="alert">
             <%= findingError%>
         </div>
     <% }%>
     
     <% if(roomDoesNotExist.length > 0) { %>
-        <div>
+        <div class="alert">
             <%= roomDoesNotExist%>
         </div>
     <% }%>
@@ -53,7 +55,7 @@
             <button type='submit' id='create-room-btn'>Create Room</button>
         </form>
     </div>
-    <script>
+    <!-- <script>
         const password = document.getElementById('room-pass');
         const roomCreatorButton = document.getElementById('create-room-btn');
 
@@ -72,7 +74,7 @@
             }
         })
         
-    </script>
+    </script> -->
 </body>
 
 </html>

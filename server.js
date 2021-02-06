@@ -103,6 +103,7 @@ app.post('/room', async (req, res) => {
         const roomData = new roomInfo(logData);
         try {
             roomData.save();
+            authenticate = true;
             res.redirect(req.body.room)
         } catch (error) {
             console.log(error);
@@ -198,20 +199,15 @@ io.on('connection', (socket) => {
             socket.to(room).broadcast.emit('left', rooms[room].users[socket.id])
             delete rooms[room].users[socket.id];
             if (Object.keys(rooms[room].users).length === 0) {
-                console.log('Room deletion process initiated');
-                setTimeout(() => {
-                    const deleteRoom = {
-                        room: room
+                const deleteRoom = {room: room}
+                roomInfo.deleteOne(deleteRoom, (err) => {
+                    if (err) {
+                        console.log(err);
+                    } else {
+                        console.log(`${room} successfully removed!`);
+                        delete rooms[room]
                     }
-                    roomInfo.deleteOne(deleteRoom, (err) => {
-                        if (err) {
-                            console.log(err);
-                        } else {
-                            console.log(`${room} successfully removed!`);
-                            delete rooms[room]
-                        }
-                    })
-                }, 5000);
+                })
             }
         })
     })
