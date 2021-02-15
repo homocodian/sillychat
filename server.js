@@ -113,9 +113,6 @@ app.post('/room', async (req, res) => {
         console.log('Error while saving data in database');
         res.redirect('/');
     }
-
-    // send message
-    // io.emit('room-created', req.body.room);
 });
 
 
@@ -168,6 +165,9 @@ function getRoom(req, res, next) {
     next()
 }
 
+app.post('/leave',(req,res)=>{
+    res.redirect('/');
+})
 
 // making server
 server.listen(3000, () => {

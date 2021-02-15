@@ -1,12 +1,21 @@
+*{
+    margin: 0;
+    padding: 0;
+    font-family: 'Noto Sans JP', sans-serif;
+}
 html,body{
-    background-color: rgb(223, 222, 220);
+    background-color:#A9A9A9;
+}
+.container{
+    display: flex;
+    justify-content: center;
+    align-items: center;
 }
 .message-container{
     background-color: whitesmoke;
     height: 500px;
     width: 700px;
-    border-radius: 8px;
-    margin: auto;
+    border-radius: 0px 15px 15px 0px;
     margin-top: 40px;
     overflow-y: auto;
 }
@@ -25,9 +34,21 @@ html,body{
     float: right;
     clear: both;
 }
+.user-container{
+    float: left;
+    margin-top: 40px;
+    height: 500px;
+    width: 200px;
+    background-color:#54a7e8;
+    border-radius: 15px 0px 0px 15px;
+    overflow-y: auto;
+    overflow-x: hidden;
+}
 #text-mess{
     display: flex;
-    justify-content: center;
+    justify-content:flex-end;
+    margin-right: 22%;
+    margin-left: 35%;
 }
 #message-input{
     width: 500px;
@@ -36,15 +57,90 @@ html,body{
     border: none;
     margin-top: 10px;
 }
-#btn{
+#sendButton{
     margin-top: 10px;
     border-radius: 3px;
     outline: none;
     border: none;
     cursor: pointer;
     border: 2px solid skyblue;
+    padding: 5px;
 }
-.emojionearea, .emojionearea.form-control {
+#roomname-container{
+    padding: 10px;
+    color: white;
+    font-size: x-large;
+}
+#invite,#leave{
+    margin: 10px;
+    border-radius: 4px;
+    background-color: white;
+    text-align: center;
+    font-size: larger;
+    cursor: pointer;
+    position: relative;
+}
+#invite:hover,#leave:hover{
+    background-color:rgb(0 0 0 / 18%);
+}
+#leave button{
+    border: none;
+    outline: none;
+    background: none;
+    cursor: pointer;
+    font-size: large;
+    width: 100%;
+}
+#users-name{
+    padding: 1px 15px;
+    font-size: large;
+}
+.blur   {
+    filter: blur(5px);
+    -webkit-filter: blur(5px);
+    -moz-filter: blur(5px);
+    -o-filter: blur(5px);
+    -ms-filter: blur(5px);
+}
+#overlay {
+    position: fixed;
+    display: none;
+    left: 0px;
+    top: 0px;
+    right: 0px;
+    bottom: 0px;
+    background: rgba(255,255,255,.8);
+    z-index: 999;
+}
+
+#popup {
+    background-color: indigo;
+    position: absolute;
+    width: 400px;
+    height: 500px;
+    background: rgb(255,255,255);
+    /* border: 5px solid rgb(90,90,90); */
+    left: 0px;
+    right: 0px;
+    top: 0px;
+    bottom: 0px;
+    margin: auto;
+}
+#popup input{
+    display: flex;
+    flex-direction: column;
+    margin: 10px 0px;
+    width: 50%;
+}
+
+#popup input[type="button"]{
+    width: 20%;
+    text-align: center;
+    outline: none;
+    cursor: pointer;
+}
+
+.emojionearea, .emojionearea.form-control{
     width: 50%;
     margin-top: 10px;
 }

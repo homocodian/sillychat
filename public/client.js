@@ -26,6 +26,7 @@ if (broadcast != null) {
         alert('Name is necessery');
         }else{
             socket.emit("new-user-joined", roomName,Username);
+            reload();
             break;
         }
     }
@@ -40,19 +41,53 @@ if (broadcast != null) {
     });
 }
 
-// socket.on('room-created',room =>{
-//     const roomElement = document.createElement('div');
-//     roomElement.innertext = room;
-//     const roomLink = document.createElement('a');
-//     roomLink.classList.add("room-join");
-//     roomLink.href = `/${room}`;
-//     roomLink.innerText = 'join'
-//     roomContainer.append(roomElement);
-//     roomContainer.append(roomLink);
-// });
+function openForm(state) {
+    var containerElement = window.document;
+    var overlayEle = document.getElementById('overlay');
+
+    if (state) {
+        overlayEle.style.display = 'block';
+        containerElement.classList.add('blur','popup');
+    } else {
+        overlayEle.style.display = 'none';
+        containerElement.classList.remove('blur','popup');
+    }
+}
+
+function reload(){
+    var container = document.getElementById("users-name");
+    var content = container.innerHTML;
+    container.innerHTML= content;
+    console.log(content);
+    console.log(container);
+}
+
+function newUser(username) {
+    let newDiv = document.createElement('div');
+    newDiv.appendChild(document.createTextNode(username));
+    document.getElementById('users-name').appendChild(newDiv);
+}
+
+function sendInvite() {
+    var senderName = document.getElementById('senderName').value;
+    var receiverEmail = document.getElementById('receiverEmail').value;
+    var overlayEle = document.getElementById('overlay');
+    if (senderName == "" || receiverEmail == "") {
+        alert('Please provide relevent info of required field')
+    } else {
+        const link = window.location.href;
+        window.open(`mailto:${receiverEmail}?subject=${senderName} wants to discuss something private&body=click on the link to join the conversation  >>>>>>>>>>> ${link}`);
+        document.getElementById('senderName').value = "";
+        document.getElementById('receiverEmail').value = "";
+        overlayEle.style.display = 'none';
+        containerElement.classList.remove('blur', 'popup');
+
+    }
+}
 
 socket.on('user-joined', name => {
     append(`${name} joined the chat`, 'right');
+    newUser(name);
     broadcast.scrollTop = broadcast.scrollHeight;
 });
 
