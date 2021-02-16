@@ -32,18 +32,21 @@
     </nav>
     <% if(roomExistence.length > 0) { %>
         <div class="alert">
+            <span class="closebtn" onclick="this.parentElement.style.display='none';">&times;</span>
             <%= roomExistence%>
         </div>
     <% }%>
 
     <% if(findingError.length > 0) { %>
         <div class="alert">
+            <span class="closebtn" onclick="this.parentElement.style.display='none';">&times;</span>
             <%= findingError%>
         </div>
     <% }%>
     
     <% if(roomDoesNotExist.length > 0) { %>
         <div class="alert">
+            <span class="closebtn" onclick="this.parentElement.style.display='none';">&times;</span>
             <%= roomDoesNotExist%>
         </div>
     <% }%>

@@ -186,6 +186,7 @@ io.on('connection', (socket) => {
         socket.join(room);
         rooms[room].users[socket.id] = name
         socket.emit('greeting',formatMessage(botName,"Welcome to chat!"));
+        io.to(room).emit('roomUser',{socketIds:rooms[room].users});
         socket.to(room).broadcast.emit('user-joined', formatMessage(name,'joined the chat'));
     });
 
@@ -193,23 +194,14 @@ io.on('connection', (socket) => {
     socket.on('send', (room, message) => {
         socket.to(room).broadcast.emit('receive',formatMessage(rooms[room].users[socket.id],message))
     });
-
+    
     // handling disconnection and deleting rooms form databases
     socket.on('disconnect', (room, name) => {
         getUserName(socket).forEach(room => {
-            socket.to(room).broadcast.emit('left', formatMessage(rooms[room].users[socket.id],"left the chat"));
+            socket.to(room).broadcast.emit('left', formatMessage(botName,`${rooms[room].users[socket.id]} left the chat`));
             delete rooms[room].users[socket.id];
-            if (Object.keys(rooms[room].users).length === 0) {
-                const deleteRoom = {room: room}
-                roomInfo.deleteOne(deleteRoom, (err) => {
-                    if (err) {
-                        console.log(err);
-                    } else {
-                        console.log(`${room} successfully removed!`);
-                        delete rooms[room]
-                    }
-                })
-            }
+            io.to(room).emit('roomUser',{socketIds:rooms[room].users});
+            deleteRoom(room);
         })
     })
 })
@@ -221,4 +213,19 @@ function getUserName(socket) {
         if (room.users[socket.id] != null) names.push(roomname)
         return names
     }, [])
+}
+
+
+function deleteRoom(room) {
+    if (Object.keys(rooms[room].users).length === 0) {
+        const deleteRoom = {room: room}
+        roomInfo.deleteOne(deleteRoom, (error) => {
+            if (error) {
+                console.log(error.error);
+            } else {
+                console.log(`${room} successfully removed!`);
+                delete rooms[room]
+            }
+        })
+    }
 }
