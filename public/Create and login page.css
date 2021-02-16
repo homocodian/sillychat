@@ -2,11 +2,12 @@
     margin: 0px;
     padding: 0px;
 }
+
 body{
     overflow: hidden;
 }
 #navbar{
-    background: green;
+    background: #54a7e8;
     display: flex;
     align-items: center;
     padding: 13px 0px;
@@ -16,7 +17,7 @@ body{
 }
 
 #navbar::before{
-    background-color: skyblue;
+    background-color: #c8c8c8;
     content: "";
     position: absolute;
     top:0;
@@ -44,7 +45,7 @@ body{
     font-family: 'Noto Sans', sans-serif;
 }
 .container{
-    background-color: skyblue;
+    background-color: #c8c8c8;
     height: 80vh;
     width: 100vw;
     display: flex;
@@ -62,7 +63,7 @@ body{
     border-bottom-left-radius:revert;
 }
 #room-box h2{
-    background-color: green;
+    background-color: #54a7e8;
     color: white;
     text-align: center;
     font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;

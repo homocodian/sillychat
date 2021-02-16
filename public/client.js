@@ -10,15 +10,27 @@ var audio = new Audio('Receive.mp3');
 // append function 
 const append = (message, position) => {
     const messageElement = document.createElement('div');
-    messageElement.innerText = message;
     messageElement.classList.add('message');
     messageElement.classList.add(position);
+    messageElement.innerHTML = `<p class="meta">${message.name} : <span> ${message.time}</span></p>
+    <p class "text">
+        ${message.text}
+    </p>`;
     broadcast.append(messageElement);
     if (position == 'left') {
         audio.play();
     }
 }
-
+function clientAppend(message,position){
+    const messageElement = document.createElement('div');
+    messageElement.classList.add('message');
+    messageElement.classList.add(position);
+    messageElement.innerHTML = `<p class="meta" >You</p>
+    <p class "text">
+    ${message}
+    </p>`;
+    broadcast.append(messageElement);
+}
 if (broadcast != null) {
     while (true) {
         const Username = prompt("Enter you name", "Anonymous");
@@ -26,18 +38,18 @@ if (broadcast != null) {
         alert('Name is necessery');
         }else{
             socket.emit("new-user-joined", roomName,Username);
-            reload();
             break;
         }
     }
     form.addEventListener('submit', (e) => {
         e.preventDefault();
         const message = messageinput.value;
-        append(`You: ${message}`, 'right');
+        clientAppend(message, 'right');
         socket.emit('send', roomName,message,broadcast.scrollTop = broadcast.scrollHeight);
         messageinput.value = '';
         const messageBox = document.querySelector('.emojionearea-editor');
         messageBox.innerHTML = "";
+        messageBox.focus();
     });
 }
 
@@ -52,20 +64,6 @@ function openForm(state) {
         overlayEle.style.display = 'none';
         containerElement.classList.remove('blur','popup');
     }
-}
-
-function reload(){
-    var container = document.getElementById("users-name");
-    var content = container.innerHTML;
-    container.innerHTML= content;
-    console.log(content);
-    console.log(container);
-}
-
-function newUser(username) {
-    let newDiv = document.createElement('div');
-    newDiv.appendChild(document.createTextNode(username));
-    document.getElementById('users-name').appendChild(newDiv);
 }
 
 function sendInvite() {
@@ -86,17 +84,20 @@ function sendInvite() {
 }
 
 socket.on('user-joined', name => {
-    append(`${name} joined the chat`, 'right');
-    newUser(name);
+    append(name, 'right');
     broadcast.scrollTop = broadcast.scrollHeight;
 });
 
-socket.on('receive', data => {
-    append(`${data.name} : ${data.message}`, 'left');
+socket.on('greeting',greeting =>{
+    append(greeting,'right');
+})
+
+socket.on('receive', message => {
+    append(message, 'left');
     broadcast.scrollTop = broadcast.scrollHeight;
 });
 
 socket.on('left', name => {
-    append(`${name} left the chat`, 'left');
+    append(name, 'left');
     broadcast.scrollTop = broadcast.scrollHeight;
 });

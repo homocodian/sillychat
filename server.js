@@ -3,10 +3,12 @@ const express = require('express');
 const bcrypt = require('bcrypt');
 const expressSession = require('express-session');
 const flash = require('connect-flash');
+const formatMessage = require('./utils/message');
 
 // getting mongoose for database entries  
 const mongoose = require('mongoose');
 const { request } = require('http');
+const { name } = require('ejs');
 
 
 // setting connection with mongo database
@@ -73,6 +75,7 @@ app.use(flash());
 // room varible to handle rooms
 const rooms = {}
 var authenticate = false;
+const botName = 'Bot';
 
 
 // rendering home page
@@ -170,8 +173,9 @@ app.post('/leave',(req,res)=>{
 })
 
 // making server
-server.listen(3000, () => {
-    console.log('App Started on port 3000');
+const port = 3000 || process.env.PORT;
+server.listen(port, () => {
+    console.log(`Server running on port ${port}`);
 });
 
 
@@ -181,22 +185,19 @@ io.on('connection', (socket) => {
     socket.on('new-user-joined', (room, name) => {
         socket.join(room);
         rooms[room].users[socket.id] = name
-        socket.to(room).broadcast.emit('user-joined', name);
+        socket.emit('greeting',formatMessage(botName,"Welcome to chat!"));
+        socket.to(room).broadcast.emit('user-joined', formatMessage(name,'joined the chat'));
     });
-
 
     // sending and receiving message
     socket.on('send', (room, message) => {
-        // console.log(message);
-        socket.to(room).broadcast.emit('receive', { message: message, name: rooms[room].users[socket.id] })
+        socket.to(room).broadcast.emit('receive',formatMessage(rooms[room].users[socket.id],message))
     });
-
-
 
     // handling disconnection and deleting rooms form databases
     socket.on('disconnect', (room, name) => {
         getUserName(socket).forEach(room => {
-            socket.to(room).broadcast.emit('left', rooms[room].users[socket.id])
+            socket.to(room).broadcast.emit('left', formatMessage(rooms[room].users[socket.id],"left the chat"));
             delete rooms[room].users[socket.id];
             if (Object.keys(rooms[room].users).length === 0) {
                 const deleteRoom = {room: room}

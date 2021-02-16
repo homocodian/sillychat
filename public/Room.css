@@ -5,6 +5,29 @@
 }
 html,body{
     background-color:#A9A9A9;
+    overflow: hidden;
+}
+
+::-webkit-scrollbar {
+    width: 10px;
+    border-radius:5px;
+}
+  
+  /* Track */
+::-webkit-scrollbar-track {
+    border-radius:5px; 
+}
+   
+  /* Handle */
+::-webkit-scrollbar-thumb {
+    background: #888; 
+    border-radius:5px;
+}
+  
+  /* Handle on hover */
+::-webkit-scrollbar-thumb:hover {
+    background: #555;
+    border-radius:5px;
 }
 .container{
     display: flex;
@@ -16,15 +39,24 @@ html,body{
     height: 500px;
     width: 700px;
     border-radius: 0px 15px 15px 0px;
-    margin-top: 40px;
+    margin-top: 20px;
     overflow-y: auto;
 }
 .message{
     width: 30%;
-    background-color: rgb(182, 206, 250);
+    background-color: white;
     border-radius: 5px;
     margin: 14px 12px;
     padding: 7px 10px;
+    box-shadow: 10px 10px 8px #888888;
+}
+.meta{
+    color: #826464;
+    font-size: smaller;
+}
+
+.text{
+    font-size: small;
 }
 .left{
     float: left;
@@ -36,7 +68,7 @@ html,body{
 }
 .user-container{
     float: left;
-    margin-top: 40px;
+    margin-top: 20px;
     height: 500px;
     width: 200px;
     background-color:#54a7e8;
@@ -49,6 +81,7 @@ html,body{
     justify-content:flex-end;
     margin-right: 22%;
     margin-left: 35%;
+    margin-bottom: 3%;
 }
 #message-input{
     width: 500px;
@@ -72,16 +105,19 @@ html,body{
     font-size: x-large;
 }
 #invite,#leave{
-    margin: 10px;
+    width: 75px;
+    margin: 10px 10px;
     border-radius: 4px;
     background-color: white;
     text-align: center;
     font-size: larger;
     cursor: pointer;
     position: relative;
+    box-shadow: 10px 10px 8px #888888;
+    display: inline-block;
 }
 #invite:hover,#leave:hover{
-    background-color:rgb(0 0 0 / 18%);
+    transform: scale(1.2);
 }
 #leave button{
     border: none;
@@ -90,6 +126,7 @@ html,body{
     cursor: pointer;
     font-size: large;
     width: 100%;
+    box-shadow: 10px 10px 8px #888888;
 }
 #users-name{
     padding: 1px 15px;
