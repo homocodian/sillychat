@@ -1,9 +1,14 @@
 // getting express
 const express = require('express');
-
+const bcrypt = require('bcrypt');
+const expressSession = require('express-session');
+const flash = require('connect-flash');
+const formatMessage = require('./utils/message');
 
 // getting mongoose for database entries  
 const mongoose = require('mongoose');
+const { request } = require('http');
+const { name } = require('ejs');
 
 
 // setting connection with mongo database
@@ -24,15 +29,13 @@ db.once('open', function () {
 
 
 // making schema
-const roomdata = new mongoose.Schema({
+const roomDataScheme = new mongoose.Schema({
     room: String,
     password: String,
 });
 
-
 // converting schema into model to use it in db
-const roominfo = mongoose.model('roomdata', roomdata);
-
+const roomInfo = mongoose.model('roomdata', roomDataScheme);
 
 // announcing it as express app
 const app = express();
@@ -58,79 +61,121 @@ app.set('view engine', 'ejs');
 app.use(express.static('public'));
 
 
+
 // getting values from client sites
 app.use(express.urlencoded({ extended: true }))
-
+app.use(expressSession({
+    secret:'This is amazing because it is developed by kratosTheCoder',
+    resave:false,
+    saveUninitialized:false,
+    cookie:{ maxAge : 60000}
+}))
+app.use(flash());
 
 // room varible to handle rooms
 const rooms = {}
+var authenticate = false;
+const botName = 'Bot';
 
 
 // rendering home page
 app.get('/', (req, res) => {
-    console.log('welcome to our home page');
-    res.render('Room Creator', { rooms: rooms });
+    res.render('Room Creator',{ rooms: rooms, findingError:req.flash('errFinding'), roomDoesNotExist:req.flash('roomDoesNotExist'), roomExistence:req.flash('roomExist')});
 });
 
 
 // rendering login page
-app.get('/login',(req,res)=>{
-    console.log('Welcome to our login page');
-    res.render('Login page');
+app.get('/login', (req, res) => {
+    res.render('Login page',
+    { authentication:req.flash('reqAuthentication'),incorrect:req.flash('incorrectPassword')});
 });
 
-
 // posting room page,getting values from client site and saving room datas into database
-app.post('/room', (req, res) => {
-    console.log('Logging info in out database...');
+app.post('/room', async (req, res) => {
     if (rooms[req.body.room] != null) {
+        req.flash('roomExist','Given room name already exists!')
         return res.redirect('/')
     }
     rooms[req.body.room] = { users: {} }
-    const data = {
-        room : req.body.room,
-        password : req.body.roomPassword,
+    try {
+        const hashedpassword = await bcrypt.hash(req.body.roomPassword, 10);
+        const logData = {
+            room: req.body.room,
+            password: hashedpassword,
+        }
+        const roomData = new roomInfo(logData);
+        try {
+            roomData.save();
+            authenticate = true;
+            res.redirect(req.body.room)
+        } catch (error) {
+            console.log(error);
+        }
+
+    } catch {
+        console.log('Error while saving data in database');
+        res.redirect('/');
     }
-    const roomdata = new roominfo(data);
-    roomdata.save();
-    res.redirect(req.body.room)
-    // send message
-    // io.emit('room-created', req.body.room);
 });
 
 
-app.get('/:room', (req, res) => {
-    console.log(`redirecting to chatroom: ${req.params.room}`);
+app.get('/:room',(req, res) => {
     if (rooms[req.params.room] == null) {
+        req.flash('roomDoesNotExist','Given room name does not exists!');
         return res.redirect('/')
     }
-    res.render('room', { roomName: req.params.room });
+    if (authenticate === true) {
+        authenticate = false;
+        res.render('room', { roomName: req.params.room });
+    } else {
+        req.flash('reqAuthentication','Please authenticate yourself by entering room name and password!');
+        res.redirect('/login');
+    }
 });
 
 
 // serving rooms and finding in databse 
-app.post('/findroom',(req,res)=>{
-    console.log(`searching room : ${req.body.room}`);
-    const getdata ={
-        room : req.body.room,
-        password : req.body.roomPassword,
-    }
-    roominfo.find(getdata,(err,data)=>{
-        console.log(`data from db : ${data}`);
-        if (err) {
-            console.log(err);
-        }
-        if (data == "") {
-            return res.redirect('/Login page');
-        }
-        res.redirect(req.body.room)
-    })
+app.post('/findroom', getRoom ,(req,res)=>{
+    
 })
 
+function getRoom(req, res, next) {
+    const getRoomByName = {
+        room: req.body.room
+    }
+    roomInfo.findOne(getRoomByName, async(err, data) => {
+        if (err) {
+            console.log(err);
+        } else {
+            try {
+                const match = await bcrypt.compare(req.body.roomPassword, data['password']);
+
+                if (match) {
+                    authenticate = true;
+                    res.redirect(req.body.room)
+                }
+                else {
+                    req.flash('incorrectPassword','Given password was incorrect!')
+                    res.redirect('/login')
+                }
+
+            } catch (error) {
+                req.flash('errFinding','Error while finding room or it did not exist!');
+                res.redirect('/');
+            }
+        }
+    })
+    next()
+}
+
+app.post('/leave',(req,res)=>{
+    res.redirect('/');
+})
 
 // making server
-server.listen(3000, () => {
-    console.log('App Started on port 3000');
+const port = 3000 || process.env.PORT;
+server.listen(port, () => {
+    console.log(`Server running on port ${port}`);
 });
 
 
@@ -140,39 +185,23 @@ io.on('connection', (socket) => {
     socket.on('new-user-joined', (room, name) => {
         socket.join(room);
         rooms[room].users[socket.id] = name
-        socket.to(room).broadcast.emit('user-joined', name);
+        socket.emit('greeting',formatMessage(botName,"Welcome to chat!"));
+        io.to(room).emit('roomUser',{socketIds:rooms[room].users});
+        socket.to(room).broadcast.emit('user-joined', formatMessage(name,'joined the chat'));
     });
-
-
 
     // sending and receiving message
     socket.on('send', (room, message) => {
-        socket.to(room).broadcast.emit('receive', { message: message, name: rooms[room].users[socket.id] })
+        socket.to(room).broadcast.emit('receive',formatMessage(rooms[room].users[socket.id],message))
     });
-
-
-
+    
     // handling disconnection and deleting rooms form databases
     socket.on('disconnect', (room, name) => {
         getUserName(socket).forEach(room => {
-            socket.to(room).broadcast.emit('left', rooms[room].users[socket.id])
+            socket.to(room).broadcast.emit('left', formatMessage(botName,`${rooms[room].users[socket.id]} left the chat`));
             delete rooms[room].users[socket.id];
-            if (Object.keys(rooms[room].users).length === 0) {
-                console.log('Room deletion process initiated');
-                setTimeout(() => {
-                    const droom = {
-                        room:room
-                    }
-                    roominfo.deleteOne(droom,(err)=>{
-                        if (err) {
-                            console.log(err);
-                        } else {
-                            console.log(`${room} successfully removed!`);
-                            delete rooms[room]
-                        }
-                    })
-                }, 5000);
-            }
+            io.to(room).emit('roomUser',{socketIds:rooms[room].users});
+            deleteRoom(room);
         })
     })
 })
@@ -184,4 +213,19 @@ function getUserName(socket) {
         if (room.users[socket.id] != null) names.push(roomname)
         return names
     }, [])
+}
+
+
+function deleteRoom(room) {
+    if (Object.keys(rooms[room].users).length === 0) {
+        const deleteRoom = {room: room}
+        roomInfo.deleteOne(deleteRoom, (error) => {
+            if (error) {
+                console.log(error.error);
+            } else {
+                console.log(`${room} successfully removed!`);
+                delete rooms[room]
+            }
+        })
+    }
 }
