@@ -1,0 +1,463 @@
+/* resetting css  */
+
+* {
+    margin: 0;
+    padding: 0;
+    font-family: 'Noto Sans JP', sans-serif;
+    box-sizing: border-box;
+    scroll-behavior: smooth;
+}
+
+:root {
+    --darkBlue: #66afe999;
+}
+
+div#notSupported{
+    display: none;
+}
+
+/* changing background color, scrollbar, height 100% of view port, animation smooth */
+body {
+    height: 100vh;
+    background-color: #A9A9A9;
+    transition: background 0.2s linear;
+}
+
+/* Dark mode background  */
+
+body.dark {
+    background: #121212;
+}
+
+/* changing appearence of scrollbar  */
+
+::-webkit-scrollbar {
+    width: 5px;
+    border-radius: 5px;
+}
+
+::-webkit-scrollbar:horizontal {
+    width: 5px;
+    border-radius: 5px;
+}
+
+/* Track */
+
+::-webkit-scrollbar-track {
+    border-radius: 5px;
+}
+
+/* Handle */
+
+::-webkit-scrollbar-thumb {
+    background: #888;
+    border-radius: 5px;
+}
+
+/* Handle on hover */
+
+::-webkit-scrollbar-thumb:hover {
+    background: #555;
+    border-radius: 5px;
+}
+
+/* components container */
+
+.container {
+    height: 90vh;
+    width: 80%;
+    margin: auto;
+    margin-top: 2%;
+}
+
+/* message container */
+
+.message-container {
+    background-color: whitesmoke;
+    height: 90%;
+    width: 77%;
+    border-radius: 0px 15px 15px 0px;
+    overflow-y: auto;
+}
+
+/* message container dark mode background  */
+
+div.message-container.darkMessageBox {
+    background-color: #292C35;
+}
+
+/* message bubble  */
+
+.message {
+    max-width: 50%;
+    background-color: white;
+    border-radius: 5px;
+    margin: 14px 12px;
+    padding: 7px 10px;
+    box-shadow: 7px 6px 8px #ccc;
+    overflow-wrap: break-word;
+}
+
+/* message bubble dark mode background  */
+
+div.message.darkTextMessageBox {
+    color: #ffffff;
+    background-color: var(--darkBlue);
+    box-shadow: 7px 6px 8px #121212;
+}
+
+/* sender name  */
+
+.meta {
+    color: #826464;
+    font-size: smaller;
+}
+
+/* sender name dark theme  */
+
+p.meta.color {
+    color: #111;
+}
+
+/* text message font size  */
+
+.text {
+    font-size: small;
+}
+
+/* others message bubble  */
+
+.left {
+    float: left;
+    clear: both;
+}
+
+/* user message bubble  */
+
+.right {
+    float: right;
+    clear: both;
+}
+
+/* user interaction box  */
+
+.user-container {
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    float: left;
+    height: 100%;
+    width: 23%;
+    background-color: #54a7e8;
+    border-radius: 15px 0px 15px 15px;
+    overflow-y: auto;
+    overflow-wrap: break-word;
+}
+
+.user-container.dark-user-container {
+    background-color: var(--darkBlue);
+}
+
+.button-container {
+    text-align: center;
+}
+
+/* text message form  */
+
+#text-mess {
+    display: flex;
+    height: 6%;
+}
+
+/* text message input box  */
+
+#message-input {
+    height: 100%;
+    width: 100%;
+}
+
+/* choose file to send  */
+
+.image-upload {
+    width: 18px;
+    margin: 13px 5px;
+}
+
+.image-upload>input {
+    display: none;
+}
+
+#send-image-button {
+    height: 30px;
+    width: 30px;
+    cursor: pointer;
+}
+
+/* send button styling  */
+
+#sendButton {
+    width: 7%;
+    height: 34px;
+    margin-top: 10px;
+    margin-left: 10px;
+    outline: none;
+    cursor: pointer;
+    border: 2px solid skyblue;
+    border-radius: 5px;
+    text-align: center;
+}
+
+/* Room name styling  */
+
+#roomname {
+    text-align: center;
+    padding: 4px 4px;
+    font-size: large;
+    background-color: white;
+    width: 90%;
+    margin: auto;
+    margin-top: 15px;
+    margin-bottom: 18px;
+    border-radius: 8px;
+    box-shadow: 10px 10px 8px #124f80;
+    position: sticky;
+}
+
+/* connected users name */
+
+#users-name {
+    padding: 1px 10px;
+    font-size: large;
+    background-color: white;
+    box-shadow: 10px 10px 8px #124f80;
+    margin: 14px 0px;
+    border-radius: 8px;
+    width: 85%;
+}
+
+/* user interaction buttons  */
+
+.userButtons {
+    width: 37%;
+    margin: 10px 7px;
+    border-radius: 4px;
+    background-color: white;
+    text-align: center;
+    font-size: larger;
+    cursor: pointer;
+    position: relative;
+    box-shadow: 10px 10px 8px #124f80;
+    display: inline-block;
+}
+
+/* setting button  */
+
+#setting {
+    outline: none;
+    border: none;
+    background: none;
+    font-size: large;
+    cursor: pointer;
+}
+
+/* Dark mode slider button  */
+
+#darkButton {
+    padding: 4px 0px;
+}
+
+/* user interaction button hover behaviour  */
+
+.buttonHover:hover {
+    transform: scale(1.2);
+}
+
+/* leave button styling  */
+
+#leave button {
+    border: none;
+    outline: none;
+    background: none;
+    cursor: pointer;
+    font-size: large;
+    width: 100%;
+    box-shadow: 10px 10px 8px #124f80;
+}
+
+/* Dark mode switch  */
+
+.switch {
+    position: relative;
+    display: inline-block;
+    width: 60px;
+}
+
+.switch input {
+    opacity: 0;
+    width: 0;
+    height: 0;
+}
+
+.slider {
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    position: absolute;
+    cursor: pointer;
+    top: 0;
+    left: 0;
+    right: 0;
+    bottom: 0;
+    background-color: #111;
+    -webkit-transition: .4s;
+    transition: .4s;
+}
+
+.slider:before {
+    position: absolute;
+    content: "";
+    height: 24px;
+    width: 24px;
+    left: 2px;
+    bottom: 2px;
+    background-color: white;
+    -webkit-transition: .4s;
+    transition: .4s;
+}
+
+.switch input:checked+.slider {
+    background-color: #111;
+}
+
+.switch input:focus+.slider {
+    box-shadow: 0 0 1px #111;
+}
+
+.switch input:checked+.slider:before {
+    -webkit-transform: translateX(30px);
+    -ms-transform: translateX(30px);
+    transform: translateX(31px);
+}
+
+/* Rounded sliders */
+
+.slider.round {
+    border-radius: 34px;
+}
+
+.slider.round:before {
+    border-radius: 50%;
+}
+
+.fa-moon {
+    color: #f1c40f;
+    padding-right: 5px;
+}
+
+.fa-sun {
+    color: #f39c12;
+    padding-left: 4px;
+}
+
+/* emoji picker styling  */
+
+.emojionearea, .emojionearea.form-control {
+    margin-top: 10px;
+}
+
+#close-button {
+    display: flex;
+    justify-content: flex-end;
+    cursor: pointer;
+}
+
+#setting-menu {
+    position: absolute;
+    left: 0;
+    right: 0;
+    bottom: 0;
+    top: 0;
+    width: 25%;
+    height: 35%;
+    background: #54a7e8;
+    border-radius: 10px;
+    margin: auto;
+    display: flex;
+    justify-content: center;
+    align-items: center;
+}
+
+#setting-menu.dark-setting-menu {
+    background: #111;
+    color: #ffffff;
+}
+
+.setting-options {
+    width: 100%;
+    margin: 0 10%;
+}
+
+#love {
+    display: flex;
+    justify-content: space-between;
+    margin: 5% 0;
+}
+
+#sound {
+    display: flex;
+    justify-content: space-between;
+    margin: 5% 0;
+}
+
+/* invite popup form  */
+
+.blur {
+    filter: blur(5px);
+    -webkit-filter: blur(5px);
+    -moz-filter: blur(5px);
+    -o-filter: blur(5px);
+    -ms-filter: blur(5px);
+}
+
+#overlay, #setting-overlay {
+    display: none;
+    justify-content: center;
+    align-items: center;
+    position: fixed;
+    left: 0px;
+    top: 0px;
+    right: 0px;
+    bottom: 0px;
+    background: rgba(255, 255, 255, .8);
+    z-index: 999;
+}
+
+.close-button-setting-menu {
+    display: flex;
+    justify-content: flex-end;
+}
+
+#invitation-popup {
+    background-color:#d9e8f5;
+    width: max-content;
+    border-radius: 10px;
+    box-shadow: rgba(0, 0, 0, 0.07) 0px 1px 2px, rgba(0, 0, 0, 0.07) 0px 2px 4px, rgba(0, 0, 0, 0.07) 0px 4px 8px, rgba(0, 0, 0, 0.07) 0px 8px 16px, rgba(0, 0, 0, 0.07) 0px 16px 32px, rgba(0, 0, 0, 0.07) 0px 32px 64px;
+}
+div#close{
+    display: flex;
+    justify-content: flex-end;
+    margin: 2px 17px 6px 0px;
+}
+div#close b{
+    cursor: pointer;
+}
+#icons {
+    display: flex;
+    justify-content: center;
+    align-items: center;
+}
+
+#whatsapp,#telegram,#gmail,#instagram,#facebook,#twitter{
+    cursor: pointer;
+    margin: 10px 10px;
+}

@@ -1,0 +1,252 @@
+
+
+@media only screen and (max-width:1440px) {
+    .message-container {
+        height: 91%;
+    }
+}
+
+@media only screen and (max-width:1024px) {
+    .message-container {
+        height: 90%;
+    }
+    #sendButton {
+        width: 10%;
+    }
+    .user-container{
+        border-radius: 15px 0px 0px 15px;
+    }
+}
+
+@media only screen and (max-width:900px) {
+    html {
+        background-color: #e4e4e4
+    }
+    body {
+        width: 100vw;
+        height: 100vh;
+    }
+    .container {
+        margin: 0;
+        width: 100%;
+        height: 100%;
+    }
+    .user-container {
+        width: 27%;
+        border-radius: 0px 0px 0px 0px;
+    }
+    .button-container {
+        display: flex;
+        flex-direction: column;
+        justify-content: center;
+        align-items: center;
+    }
+    .userButtons {
+        width: auto;
+        padding: 6px;
+    }
+    #darkButton {
+        padding: 4px 7px;
+    }
+    #leave button{
+        box-shadow: none;
+    }
+    .message-container {
+        width: 73%;
+        height: 91%;
+        border-radius: 0px 0px 0px 0px;
+    }
+}
+
+@media only screen and (max-width:600px) {
+    /* user interaction box  */
+    .container {
+        display: flex;
+        flex-direction: column;
+        justify-content: center;
+        align-items: center;
+    }
+    .user-container {
+        width: 100%;
+        height: 100%;
+        display: none;
+    }
+    .button-container {
+        width: 28%;
+    }
+    .message-container {
+        width: 100%;
+        height: 100%;
+    }
+    #text-mess {
+        background-color: lightgrey;
+        position: sticky;
+        display: flex;
+        height: 9%;
+        bottom: 0;
+        width: 100%;
+    }
+    .menubar {
+        position: sticky;
+        top: 0;
+        display: flex;
+        justify-content: space-between;
+        align-items: center;
+        background-color: gray;
+        z-index: 999;
+        height: 8%;
+        padding: 10px;
+    }
+
+    /* logo  */
+
+    #logo-compartment{
+        display: flex;
+    }
+
+    #logo{
+        display: inline-block;
+        width: 7%;
+        border-radius: 50%;
+    }
+    #logo-discription{
+        padding-left: 2%;
+    }
+    #logo-sub{
+        font-size: 50%;
+    }
+    /* menu button  */
+    .menu-btn {
+        margin-right: 5px;
+        position: relative;
+        display: flex;
+        justify-content: center;
+        align-items: center;
+        width: 25px;
+        height: 25px;
+        cursor: pointer;
+        transition: all .5s ease-in-out;
+    }
+    .menu-btn-line {
+        width: 25px;
+        height: 4px;
+        background-color: #ffffff;
+        border-radius: 5px;
+        box-shadow: 0 2px 5px rgba(255, 101, 47, .2);
+        transition: all .5s ease-in-out;
+    }
+    .menu-btn-line::before, .menu-btn-line::after {
+        content: '';
+        position: absolute;
+        width: 25px;
+        height: 4px;
+        background-color: #ffffff;
+        border-radius: 5px;
+        box-shadow: 0 2px 5px rgba(255, 101, 47, .2);
+        transition: all .5s ease-in-out;
+    }
+    .menu-btn-line::before {
+        transform: translateY(-10px);
+    }
+    .menu-btn-line::after {
+        transform: translateY(10px);
+    }
+    /* Animation of menu button  */
+    .menu-btn.open .menu-btn-line {
+        transform: translateX(-50px);
+        background: transparent;
+        box-shadow: none;
+    }
+    .menu-btn.open .menu-btn-line::before {
+        transform: rotate(45deg) translate(25px, -25px);
+    }
+    .menu-btn.open .menu-btn-line::after {
+        transform: rotate(-45deg) translate(25px, 25px);
+    }
+    #sendButton {
+        width: 20%;
+    }
+    .message {
+        max-width: 80%;
+    }
+    #setting-menu{
+        width: 60%;
+    }
+}
+
+@media only screen and (min-width:601px){
+    .user-container{
+        display: flex;
+    }
+    #logo-compartment{
+        display: none;
+    }
+}
+
+@media only screen and (min-width:2000px) {
+    .message-container {
+        height: 93%;
+    }
+    .setting-options{
+        font-size: 35px;
+    }
+}
+@media only screen and (min-width:2500px) {
+    .message-container {
+        height: 95%;
+    }
+    .setting-options{
+        font-size: 40px;
+    }
+}
+
+@media only screen and (max-width:380px) {
+    .button-container{
+        flex-direction: column;
+        width: 60%;
+    }
+    .userButtons{
+        width: 100%;
+    }
+    .menubar{
+        height: 6%;
+    }
+    #logo{
+        width: 10%;
+    }
+}
+
+@media only screen and (max-width:280px){
+    #logo{
+        width: 12%;
+    }
+    #logo-discription{
+        font-size: 10px;
+    }
+    #setting-menu{
+        width: 85%;
+    }
+    #whatsapp,#telegram,#gmail,#instagram,#facebook,#twitter{
+        margin: 5px 1px;
+    }
+}
+@media only screen and (max-width:170px){
+    body{
+        background: none;
+    }
+    .menubar{
+        display: none;
+    }
+    .container{
+        display: none;
+    }
+    #overlay{
+        display: none;
+    }
+    #setting-overlay{
+        display: none;
+    }
+    div#notSupported{
+        display: block;
+    }
+}

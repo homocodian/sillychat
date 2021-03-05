@@ -7,9 +7,6 @@ const formatMessage = require('./utils/message');
 
 // getting mongoose for database entries  
 const mongoose = require('mongoose');
-const { request } = require('http');
-const { name } = require('ejs');
-
 
 // setting connection with mongo database
 mongoose.connect('mongodb://localhost:27017/chatapp', { useNewUrlParser: true, useUnifiedTopology: true });
@@ -185,7 +182,7 @@ io.on('connection', (socket) => {
     socket.on('new-user-joined', (room, name) => {
         socket.join(room);
         rooms[room].users[socket.id] = name
-        socket.emit('greeting',formatMessage(botName,"Welcome to chat!"));
+        socket.emit('greeting',formatMessage(botName,"Welcome to sillychat!"));
         io.to(room).emit('roomUser',{socketIds:rooms[room].users});
         socket.to(room).broadcast.emit('user-joined', formatMessage(name,'joined the chat'));
     });
