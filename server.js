@@ -183,8 +183,8 @@ io.on('connection', (socket) => {
         socket.join(room);
         rooms[room].users[socket.id] = name
         socket.emit('greeting',formatMessage(botName,"Welcome to sillychat!"));
-        io.to(room).emit('roomUser',{socketIds:rooms[room].users});
-        socket.to(room).broadcast.emit('user-joined', formatMessage(name,'joined the chat'));
+        io.to(room).emit('roomUser',{Ids:rooms[room].users});
+        socket.to(room).broadcast.emit('user-joined', formatMessage(botName,`${name} joined the chat`));
     });
 
     // sending and receiving message
@@ -193,7 +193,7 @@ io.on('connection', (socket) => {
     });
     
     // handling disconnection and deleting rooms form databases
-    socket.on('disconnect', (room, name) => {
+    socket.on('disconnect', () => {
         getUserName(socket).forEach(room => {
             socket.to(room).broadcast.emit('left', formatMessage(botName,`${rooms[room].users[socket.id]} left the chat`));
             delete rooms[room].users[socket.id];

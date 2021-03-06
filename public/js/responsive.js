@@ -41,7 +41,6 @@ function imageSelection() {
             return false;
         }else{
             image_button.src = `../png/tick.png`;
-            // alert('file size is correct- '+fileSize+' bytes');
             return false
         }
 
