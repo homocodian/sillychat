@@ -1,40 +1,18 @@
+require('dotenv').config();
 // getting express
 const express = require('express');
+// mongoose schema
+const roomInfo = require('./utils/modal.js');
+// bcrypt for password hashing
 const bcrypt = require('bcrypt');
+// sessions for users
 const expressSession = require('express-session');
+// flash for showing messages sent from server
 const flash = require('connect-flash');
-const formatMessage = require('./utils/message');
+// for formatting messages of users
+const formatMessage = require('./utils/message.js');
 
-// getting mongoose for database entries  
-const mongoose = require('mongoose');
-
-// setting connection with mongo database
-mongoose.connect('mongodb://localhost:27017/chatapp', { useNewUrlParser: true, useUnifiedTopology: true });
-
-
-//getting connection of database as db variable
-const db = mongoose.connection;
-// logging error if occurs
-db.on('error', console.error.bind(console, 'connection error:'));
-
-
-// checking for once are we connected or not
-db.once('open', function () {
-    // we're connected!
-    console.log("We are connected!");
-});
-
-
-// making schema
-const roomDataScheme = new mongoose.Schema({
-    room: String,
-    password: String,
-});
-
-// converting schema into model to use it in db
-const roomInfo = mongoose.model('roomdata', roomDataScheme);
-
-// announcing it as express app
+// declaring it as express app
 const app = express();
 
 
@@ -62,7 +40,7 @@ app.use(express.static('public'));
 // getting values from client sites
 app.use(express.urlencoded({ extended: true }))
 app.use(expressSession({
-    secret:'This is amazing because it is developed by kratosTheCoder',
+    secret: process.env.EXPRESS_SESSION_SECRET,
     resave:false,
     saveUninitialized:false,
     cookie:{ maxAge : 60000}
@@ -71,7 +49,7 @@ app.use(flash());
 
 // room varible to handle rooms
 const rooms = {}
-var authenticate = false;
+let authenticate = false;
 const botName = 'Bot';
 
 
@@ -115,7 +93,7 @@ app.post('/room', async (req, res) => {
     }
 });
 
-
+// redirecting to room
 app.get('/:room',(req, res) => {
     if (rooms[req.params.room] == null) {
         req.flash('roomDoesNotExist','Given room name does not exists!');
@@ -136,6 +114,11 @@ app.post('/findroom', getRoom ,(req,res)=>{
     
 })
 
+app.post('/leave',(req,res)=>{
+    res.redirect('/');
+})
+
+// function for accessing rooms and hashing password
 function getRoom(req, res, next) {
     const getRoomByName = {
         room: req.body.room
@@ -164,10 +147,6 @@ function getRoom(req, res, next) {
     })
     next()
 }
-
-app.post('/leave',(req,res)=>{
-    res.redirect('/');
-})
 
 // making server
 const port = 3000 || process.env.PORT;
