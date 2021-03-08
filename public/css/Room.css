@@ -29,6 +29,11 @@ body.dark {
     background: #121212;
 }
 
+/* RedCherry Theme */
+body.cherry {
+    background: #e08897;
+}
+
 /* changing appearence of scrollbar  */
 
 ::-webkit-scrollbar {
@@ -80,6 +85,12 @@ body.dark {
     overflow-y: auto;
 }
 
+/* RedCherry Theme */
+.message-container.cherrybgimg{
+    background: url("../themebgs/cherrybg.jpg");
+    background-size: cover;
+}
+
 /* message container dark mode background  */
 
 div.message-container.darkMessageBox {
@@ -91,11 +102,18 @@ div.message-container.darkMessageBox {
 .message {
     max-width: 50%;
     background-color: white;
-    border-radius: 5px;
+    border-radius: 20px;
     margin: 14px 12px;
     padding: 7px 10px;
     box-shadow: 7px 6px 8px #ccc;
     overflow-wrap: break-word;
+}
+
+/* RedCherry Theme */
+.message.cherrymsg {
+    background-color: #ff0080;
+    color: white;
+    box-shadow: 7px 5px 8px #b76666;
 }
 
 /* message bubble dark mode background  */
@@ -124,6 +142,7 @@ div.message.darkTextMessageBox {
 .left {
     float: left;
     clear: both;
+    border-bottom-left-radius: 0px;
 }
 
 /* user message bubble  */
@@ -131,6 +150,7 @@ div.message.darkTextMessageBox {
 .right {
     float: right;
     clear: both;
+    border-bottom-right-radius: 0px;
 }
 
 /* user interaction box  */
@@ -146,6 +166,11 @@ div.message.darkTextMessageBox {
     border-radius: 15px 0px 15px 15px;
     overflow-y: auto;
     overflow-wrap: break-word;
+}
+
+/* RedCherry Theme */
+.user-container.cherryinfobox{
+    background-color:#ff3d9e;
 }
 
 .user-container.dark-user-container {
@@ -217,6 +242,12 @@ div.message.darkTextMessageBox {
     position: sticky;
 }
 
+/* RedCherry Theme */
+#roomname.cherryroomname{
+    background-color:lightpink;
+    box-shadow: 10px 10px 8px #d60000de;
+}
+
 /* connected users name */
 
 #users-name {
@@ -227,6 +258,12 @@ div.message.darkTextMessageBox {
     margin: 14px 0px;
     border-radius: 8px;
     width: 85%;
+}
+
+/* RedCherry Theme */
+#users-name.cherryusername{
+    background-color: lightpink;
+    box-shadow: 10px 10px 8px #d60000de;
 }
 
 /* user interaction buttons  */
@@ -276,6 +313,12 @@ div.message.darkTextMessageBox {
     font-size: large;
     width: 100%;
     box-shadow: 10px 10px 8px #124f80;
+}
+
+/* RedCherry Theme */
+#leave button.cherryleave{
+    background-color: lightpink;
+    box-shadow: 10px 10px 8px #d60000de;
 }
 
 /* Dark mode switch  */
@@ -391,7 +434,7 @@ div.message.darkTextMessageBox {
     margin: 0 10%;
 }
 
-#love {
+#cherry {
     display: flex;
     justify-content: space-between;
     margin: 5% 0;
