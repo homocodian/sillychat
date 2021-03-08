@@ -7,6 +7,7 @@ const form = document.getElementById('text-mess');
 const messageInput = document.getElementById('message-input');
 const broadcast = document.querySelector('.message-container');
 const darkModeDecider = document.getElementById('toggleDark');
+const redcherryDecider = document.getElementById('redcherry');
 const muteSound = document.getElementById('mute-sound');
 const url = window.location.href;
 const usersName = document.getElementById('users-name');
@@ -192,6 +193,34 @@ function darkMode() {
         dark_setting_menu.classList.remove('dark-setting-menu');
         messageBox.forEach(box => {
             box.classList.remove('darkTextMessageBox');
+        });
+    }
+    scrollup();
+}
+
+// RedCherry Theme
+function redcherry() {
+    var messageBox = document.querySelectorAll('div.message');
+    var user_container = document.querySelector('.user-container');
+    var dark_setting_menu = document.getElementById('setting-menu');
+    let dark_invite_menu = document.getElementById('invitation-popup');
+    if (redcherryDecider.checked) {
+        document.body.classList.add('cherry');
+        broadcast.classList.add('cherrybgimg');
+        user_container.classList.add('cherryinfobox');
+        // dark_invite_menu.classList.add('dark-invitation-popup');
+        // dark_setting_menu.classList.add('dark-setting-menu');
+        messageBox.forEach(box => {
+            box.classList.add('cherrymsg');
+        });
+    } else {
+        document.body.classList.remove('cherry');
+        broadcast.classList.remove('cherrybgimg');
+        user_container.classList.remove('cherryinfobox');
+        // dark_invite_menu.classList.remove('dark-invitation-popup');
+        // dark_setting_menu.classList.remove('dark-setting-menu');
+        messageBox.forEach(box => {
+            box.classList.remove('cherrymsg');
         });
     }
     scrollup();
