@@ -37,6 +37,13 @@
         </div>
     <% }%>
 
+    <% if(unauthorizedToken.length > 0) { %>
+        <div class="alert">
+            <span class="closebtn" onclick="this.parentElement.style.display='none';">&times;</span>
+            <%= unauthorizedToken%>
+        </div>
+    <% }%>
+
     <% if(findingError.length > 0) { %>
         <div class="alert">
             <span class="closebtn" onclick="this.parentElement.style.display='none';">&times;</span>
