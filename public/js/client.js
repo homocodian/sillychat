@@ -9,8 +9,8 @@ const broadcast = document.querySelector('.message-container');
 const darkModeDecider = document.getElementById('toggleDark');
 const redcherryDecider = document.getElementById('redcherry');
 const muteSound = document.getElementById('mute-sound');
-const url = window.location.href;
 const usersName = document.getElementById('users-name');
+let invitationUrl = null;
 
 // Notification sound 
 var audio = new Audio('Receive.mp3');
@@ -42,7 +42,7 @@ if (broadcast != null) {
 
 // user join event
 socket.on('user-joined', name => {
-    append(name, 'right');
+    append(name, 'left');
 });
 
 // room users name
@@ -58,6 +58,11 @@ socket.on('greeting',greeting =>{
 // messages from server
 socket.on('receive', message => {
     append(message, 'left');
+});
+
+// for invitation
+socket.on('invite',(code)=>{
+    invitationUrl = code
 });
 
 // those users who are offline
@@ -171,6 +176,9 @@ function openForm(state) {
     var overlayEle = document.getElementById('overlay');
     if (state) {
         overlayEle.style.display = 'flex';
+        const url = window.location.href.split('/');
+        const modifiedUrl = url[0]+'//'+url[1]+url[2];
+        socket.emit('generateInvitationCode',roomName,modifiedUrl);
     } else {
         overlayEle.style.display = 'none';
     }
@@ -258,26 +266,36 @@ function redcherry() {
 
 // whatsapp invitation
 function openwhatsapp() {
-    window.open(`whatsapp://send?text=${url}`);
+    if (invitationUrl != null) {
+        window.open(`whatsapp://send?text=${invitationUrl}`);
+    }
 }
 
 // facebook invitation
 function openfacebook() {
-    window.open("https://www.facebook.com/sharer/sharer.php?u=" + encodeURIComponent(url), "pop", "width=600, height=400, scrollbars=no"); 
+    if (invitationUrl != null) {
+        window.open("https://www.facebook.com/sharer/sharer.php?u=" + encodeURIComponent(invitationUrl), "pop", "width=600, height=400, scrollbars=no"); 
+    }
 }
 
 // twitter invitation
 function opentwitter() {
-    window.open(`https://twitter.com/messages/compose?text=${encodeURIComponent(url)}`);
+    if (invitationUrl != null) {
+        window.open(`https://twitter.com/messages/compose?text=${encodeURIComponent(invitationUrl)}`);
+    }
 }
 
 // telegram invitation
 function opentelegram() {
-    const text = "I want to discuss something private with you click on above link";
-    window.open(`tg://msg_url?url=${url}&text=${text}`);
+    if (invitationUrl != null) {
+        const text = "I want to discuss something private with you click on above link";
+        window.open(`tg://msg_url?url=${invitationUrl}&text=${text}`);
+    }
 }
 
 // email invitation
 function openmail() {
-    window.open(`mailto:?subject= I wants to discuss something private&body=click on the link to join the conversation  >>>>>> ${url}`);
+    if (invitationUrl != null) {
+        window.open(`mailto:?subject= I wants to discuss something private&body=click on the link to join the conversation  >>>>>> ${invitationUrl}`);
+    }
 }

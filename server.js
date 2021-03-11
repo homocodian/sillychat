@@ -11,6 +11,8 @@ const expressSession = require('express-session');
 const flash = require('connect-flash');
 // for formatting messages of users
 const formatMessage = require('./utils/message.js');
+// json web tokens for authorization
+const jwt = require('jsonwebtoken');
 
 // declaring it as express app
 const app = express();
@@ -55,7 +57,7 @@ const botName = 'Bot';
 
 // rendering home page
 app.get('/', (req, res) => {
-    res.render('Room Creator',{ rooms: rooms, findingError:req.flash('errFinding'), roomDoesNotExist:req.flash('roomDoesNotExist'), roomExistence:req.flash('roomExist')});
+    res.render('Room Creator',{ rooms: rooms, findingError:req.flash('errFinding'), roomDoesNotExist:req.flash('roomDoesNotExist'), roomExistence:req.flash('roomExist'),unauthorizedToken:req.flash('unauthorisedToken')});
 });
 
 
@@ -108,11 +110,10 @@ app.get('/:room',(req, res) => {
     }
 });
 
+app.get('/:room/:authToken',authenticateToken,(req,res)=>{});
 
 // serving rooms and finding in databse 
-app.post('/findroom', getRoom ,(req,res)=>{
-    
-})
+app.post('/findroom', getRoom ,(req,res)=>{})
 
 app.post('/leave',(req,res)=>{
     res.redirect('/');
@@ -148,6 +149,33 @@ function getRoom(req, res, next) {
     next()
 }
 
+function authenticateToken(req,res,next) {
+    if (rooms[req.params.room] == null) {
+        req.flash('roomDoesNotExist','Given room name does not exists!');
+        return res.redirect('/')
+    }else{
+        const token = req.params.authToken;
+        if (token == null) {
+            return res.redirect('/');
+        }
+        jwt.verify(token,process.env.ACCESS_TOKEN_SECRET,(err,room)=>{
+            if(err) {
+                req.flash('unauthorisedToken','Authentication failed');
+                return res.redirect('/');
+            }else{
+                if (req.params.room == room) {
+                    res.render('room', { roomName: room });
+                }else{
+                    req.flash('unauthorisedToken','Authentication failed');
+                    return res.redirect('/');
+                }
+            }
+            next()
+        })
+    }
+    
+}
+
 // making server
 const port = 3000 || process.env.PORT;
 server.listen(port, () => {
@@ -164,6 +192,13 @@ io.on('connection', (socket) => {
         socket.emit('greeting',formatMessage(botName,"Welcome to sillychat!"));
         io.to(room).emit('roomUser',{Ids:rooms[room].users});
         socket.to(room).broadcast.emit('user-joined', formatMessage(botName,`${name} joined the chat`));
+    });
+
+    //invitation code
+    socket.on('generateInvitationCode',(room,modifiedUrl)=>{
+        const accessToken = jwt.sign(room, process.env.ACCESS_TOKEN_SECRET);
+        const newUrl = modifiedUrl + '/' + room + '/' + accessToken;
+        io.to(socket.id).emit('invite',newUrl);
     });
 
     // sending and receiving message
