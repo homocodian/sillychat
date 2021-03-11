@@ -126,7 +126,9 @@ const append = (message, position) => {
     scrollup()
     if (position == 'left') {
         if (!muteSound.checked) {
-            audio.play();
+            audio.play().catch(()=>{
+                console.warn('User interation needed with dom');
+            })
         }
     }
     
