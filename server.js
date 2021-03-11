@@ -96,21 +96,7 @@ app.post('/room', async (req, res) => {
 });
 
 // redirecting to room
-app.get('/:room',(req, res) => {
-    if (rooms[req.params.room] == null) {
-        req.flash('roomDoesNotExist','Given room name does not exists!');
-        return res.redirect('/')
-    }
-    if (authenticate === true) {
-        authenticate = false;
-        res.render('room', { roomName: req.params.room });
-    } else {
-        req.flash('reqAuthentication','Please authenticate yourself by entering room name and password!');
-        res.redirect('/login');
-    }
-});
-
-app.get('/:room/:authToken',authenticateToken,(req,res)=>{});
+app.get('/:room',authenticateRooms,(req, res) => {});
 
 // serving rooms and finding in databse 
 app.post('/findroom', getRoom ,(req,res)=>{})
@@ -118,6 +104,37 @@ app.post('/findroom', getRoom ,(req,res)=>{})
 app.post('/leave',(req,res)=>{
     res.redirect('/');
 })
+
+function authenticateRooms(req,res,next) {
+    if (rooms[req.params.room] == null) {
+        req.flash('roomDoesNotExist','Given room name does not exists!');
+        return res.redirect('/')
+    }
+    if (req.query.t != undefined) {
+        const token = req.query.t;
+        jwt.verify(token,process.env.ACCESS_TOKEN_SECRET,(err,room)=>{
+            if(err) {
+                req.flash('unauthorisedToken','Authentication failed');
+                return res.redirect('/');
+            }else{
+                if (req.params.room == room) {
+                    res.render('room', { roomName: room });
+                }else{
+                    req.flash('unauthorisedToken','Authentication failed');
+                    return res.redirect('/');
+                }
+            }
+        })
+    } else if (authenticate === true) {
+        authenticate = false;
+        res.render('room', { roomName: req.params.room });
+    } else {
+        req.flash('reqAuthentication','Please authenticate yourself by entering room name and password!');
+        res.redirect('/login');
+    }
+    next();
+}
+
 
 // function for accessing rooms and hashing password
 function getRoom(req, res, next) {
@@ -149,33 +166,6 @@ function getRoom(req, res, next) {
     next()
 }
 
-function authenticateToken(req,res,next) {
-    if (rooms[req.params.room] == null) {
-        req.flash('roomDoesNotExist','Given room name does not exists!');
-        return res.redirect('/')
-    }else{
-        const token = req.params.authToken;
-        if (token == null) {
-            return res.redirect('/');
-        }
-        jwt.verify(token,process.env.ACCESS_TOKEN_SECRET,(err,room)=>{
-            if(err) {
-                req.flash('unauthorisedToken','Authentication failed');
-                return res.redirect('/');
-            }else{
-                if (req.params.room == room.room) {
-                    res.render('room', { roomName: room.room });
-                }else{
-                    req.flash('unauthorisedToken','Authentication failed');
-                    return res.redirect('/');
-                }
-            }
-            next()
-        })
-    }
-    
-}
-
 // making server
 const port = 3000 || process.env.PORT;
 server.listen(port, () => {
@@ -197,7 +187,7 @@ io.on('connection', (socket) => {
     //invitation code
     socket.on('generateInvitationCode',(room,modifiedUrl)=>{
         const accessToken = jwt.sign({room:room},process.env.ACCESS_TOKEN_SECRET,{ expiresIn: 60*2 });
-        const newUrl = modifiedUrl + '/' + room + '/' + accessToken;
+        const newUrl = modifiedUrl + '/' + room + '?t=' + accessToken;
         io.to(socket.id).emit('invite',newUrl);
     });
 

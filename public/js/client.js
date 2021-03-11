@@ -141,15 +141,9 @@ const append = (message, position) => {
     scrollup()
     if (position == 'left') {
         if (!muteSound.checked) {
-            try {
-                audio.play();
-            } catch (error) {
-                console.log(error);
-                console.log(error.error);
-                audio.resume().then(() => {
-                console.log('Playback resumed successfully');
-                });
-            }
+            audio.play().catch(()=>{
+                console.warn('User interation needed with dom');
+            })
         }
     }
     
