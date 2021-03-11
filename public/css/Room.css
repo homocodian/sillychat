@@ -243,7 +243,7 @@ div.message.darkTextMessageBox {
 }
 
 /* RedCherry Theme */
-#roomname.cherryroomname{
+#roomname.cherryroomname,#users-name.cherryusername,.userButtons.cherryuserbuttons{
     background-color:lightpink;
     box-shadow: 10px 10px 8px #d60000de;
 }
@@ -258,12 +258,6 @@ div.message.darkTextMessageBox {
     margin: 14px 0px;
     border-radius: 8px;
     width: 85%;
-}
-
-/* RedCherry Theme */
-#users-name.cherryusername{
-    background-color: lightpink;
-    box-shadow: 10px 10px 8px #d60000de;
 }
 
 /* user interaction buttons  */
@@ -312,7 +306,6 @@ div.message.darkTextMessageBox {
     cursor: pointer;
     font-size: large;
     width: 100%;
-    box-shadow: 10px 10px 8px #124f80;
 }
 
 /* RedCherry Theme */
@@ -429,6 +422,10 @@ div.message.darkTextMessageBox {
     color: #ffffff;
 }
 
+#setting-menu.cherry-setting-menu{
+    background-color: #ff3d9e;
+}
+
 .setting-options {
     width: 100%;
     margin: 0 10%;
@@ -484,6 +481,10 @@ div.message.darkTextMessageBox {
 div#invitation-popup.dark-invitation-popup{
     color: #ffffff;
     background-color: #121212;
+}
+
+div#invitation-popup.cherry-invitation-popup{
+    background-color: #fc94c8a1;
 }
 
 div#close{

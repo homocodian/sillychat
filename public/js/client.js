@@ -102,6 +102,9 @@ function clientAppend(message,position){
     if (darkModeDecider.checked) {
         messageElement.classList.add('darkTextMessageBox');
     }
+    else if (redcherryDecider.checked) {
+        messageElement.classList.add('cherrymsg');
+    }
     broadcast.append(messageElement);
     scrollup()
 }
@@ -118,6 +121,9 @@ const append = (message, position) => {
     broadcast.append(messageElement);
     if (darkModeDecider.checked) {
         messageElement.classList.add('darkTextMessageBox');
+    }
+    else if (redcherryDecider.checked) {
+        messageElement.classList.add('cherrymsg');
     }
     scrollup()
     if (position == 'left') {
@@ -154,8 +160,9 @@ function open_setting() {
         setting_menu.style.display = 'flex';
         setting_menu_closed = false;
     } else {
-        getting_setting_div.style.display = "none";
         setting_menu_closed = true;
+        setting_menu.style.display = 'none';
+        getting_setting_div.style.display = "none";
     }
 }
 
@@ -172,6 +179,11 @@ function openForm(state) {
 
 //Dark mode
 function darkMode() {
+    if (redcherryDecider.checked) {
+        darkModeDecider.checked = false;
+        alert('Please Turn off red cherry theme to active dark mode');
+        return
+    }
     var messageBox = document.querySelectorAll('div.message');
     var user_container = document.querySelector('.user-container');
     var dark_setting_menu = document.getElementById('setting-menu');
@@ -200,25 +212,43 @@ function darkMode() {
 
 // RedCherry Theme
 function redcherry() {
-    var messageBox = document.querySelectorAll('div.message');
-    var user_container = document.querySelector('.user-container');
-    var dark_setting_menu = document.getElementById('setting-menu');
-    let dark_invite_menu = document.getElementById('invitation-popup');
+    if (darkModeDecider.checked) {
+        redcherryDecider.checked = false;
+        alert('Please Turn off dark mode to active red cherry theme');
+        return
+    }
+    const messageBox = document.querySelectorAll('div.message');
+    const user_container = document.querySelector('.user-container');
+    const cherry_setting_menu = document.getElementById('setting-menu');
+    const cherry_invite_menu = document.getElementById('invitation-popup');
+    const roomname_box = document.getElementById('roomname');
+    const username_box = document.getElementById('users-name');
+    const userbutton_box = document.querySelectorAll('.userButtons');
     if (redcherryDecider.checked) {
         document.body.classList.add('cherry');
         broadcast.classList.add('cherrybgimg');
+        roomname_box.classList.add('cherryroomname');
+        username_box.classList.add('cherryusername');
+        userbutton_box.forEach(box => {
+            box.classList.add('cherryuserbuttons');
+        });
+        cherry_setting_menu.classList.add('cherry-setting-menu');
+        cherry_invite_menu.classList.add('cherry-invitation-popup');
         user_container.classList.add('cherryinfobox');
-        // dark_invite_menu.classList.add('dark-invitation-popup');
-        // dark_setting_menu.classList.add('dark-setting-menu');
         messageBox.forEach(box => {
             box.classList.add('cherrymsg');
         });
     } else {
         document.body.classList.remove('cherry');
         broadcast.classList.remove('cherrybgimg');
+        roomname_box.classList.remove('cherryroomname');
+        username_box.classList.remove('cherryusername');
+        userbutton_box.forEach(box => {
+            box.classList.remove('cherryuserbuttons');
+        });
+        cherry_setting_menu.classList.remove('cherry-setting-menu');
+        cherry_invite_menu.classList.remove('cherry-invitation-popup');
         user_container.classList.remove('cherryinfobox');
-        // dark_invite_menu.classList.remove('dark-invitation-popup');
-        // dark_setting_menu.classList.remove('dark-setting-menu');
         messageBox.forEach(box => {
             box.classList.remove('cherrymsg');
         });
