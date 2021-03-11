@@ -114,11 +114,11 @@ function authenticateRooms(req,res,next) {
         const token = req.query.t;
         jwt.verify(token,process.env.ACCESS_TOKEN_SECRET,(err,room)=>{
             if(err) {
-                req.flash('unauthorisedToken','Authentication failed');
+                req.flash('unauthorisedToken','Invalid token');
                 return res.redirect('/');
             }else{
-                if (req.params.room == room) {
-                    res.render('room', { roomName: room });
+                if (req.params.room == room.room) {
+                    res.render('room', { roomName: room.room });
                 }else{
                     req.flash('unauthorisedToken','Authentication failed');
                     return res.redirect('/');
