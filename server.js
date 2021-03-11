@@ -163,8 +163,8 @@ function authenticateToken(req,res,next) {
                 req.flash('unauthorisedToken','Authentication failed');
                 return res.redirect('/');
             }else{
-                if (req.params.room == room) {
-                    res.render('room', { roomName: room });
+                if (req.params.room == room.room) {
+                    res.render('room', { roomName: room.room });
                 }else{
                     req.flash('unauthorisedToken','Authentication failed');
                     return res.redirect('/');
@@ -191,12 +191,12 @@ io.on('connection', (socket) => {
         rooms[room].users[socket.id] = name
         socket.emit('greeting',formatMessage(botName,"Welcome to sillychat!"));
         io.to(room).emit('roomUser',{Ids:rooms[room].users});
-        socket.to(room).broadcast.emit('user-joined', formatMessage(botName,`${name} joined the chat`));
+        socket.to(room).broadcast.emit('user-joined', formatMessage(botName,`${name} has joined us`));
     });
 
     //invitation code
     socket.on('generateInvitationCode',(room,modifiedUrl)=>{
-        const accessToken = jwt.sign(room, process.env.ACCESS_TOKEN_SECRET);
+        const accessToken = jwt.sign({room:room},process.env.ACCESS_TOKEN_SECRET,{ expiresIn: 60*2 });
         const newUrl = modifiedUrl + '/' + room + '/' + accessToken;
         io.to(socket.id).emit('invite',newUrl);
     });
@@ -209,7 +209,7 @@ io.on('connection', (socket) => {
     // handling disconnection and deleting rooms form databases
     socket.on('disconnect', () => {
         getUserName(socket).forEach(room => {
-            socket.to(room).broadcast.emit('left', formatMessage(botName,`${rooms[room].users[socket.id]} left the chat`));
+            socket.to(room).broadcast.emit('left', formatMessage(botName,`${rooms[room].users[socket.id]} left us`));
             delete rooms[room].users[socket.id];
             io.to(room).emit('roomUser',{socketIds:rooms[room].users});
             deleteRoom(room);

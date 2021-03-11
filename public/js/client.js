@@ -40,6 +40,14 @@ if (broadcast != null) {
     });
 }
 
+// One-liner to resume playback when user interacted with the page.
+// document.querySelector('#sendButton').addEventListener('click', function() {
+//     audio.resume().then(() => {
+//         console.log('Playback resumed successfully');
+//     });
+// });
+  
+
 // user join event
 socket.on('user-joined', name => {
     append(name, 'left');
@@ -133,7 +141,15 @@ const append = (message, position) => {
     scrollup()
     if (position == 'left') {
         if (!muteSound.checked) {
-            audio.play();
+            try {
+                audio.play();
+            } catch (error) {
+                console.log(error);
+                console.log(error.error);
+                audio.resume().then(() => {
+                console.log('Playback resumed successfully');
+                });
+            }
         }
     }
     
