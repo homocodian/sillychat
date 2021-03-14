@@ -68,7 +68,20 @@ app.get('/login', (req, res) => {
 });
 
 // posting room page,getting values from client site and saving room datas into database
-app.post('/room', async (req, res) => {
+app.post('/room',postRooms,(req, res) => {});
+
+// redirecting to room
+app.get('/:room',authenticateRooms,(req, res) => {});
+
+// serving rooms and finding in databse 
+app.post('/findroom', getRoom ,(req,res)=>{})
+
+app.post('/leave',(req,res)=>{
+    res.redirect('/');
+})
+
+//posting all rooms necessary details to the server
+async function postRooms(req,res,next) {
     if (rooms[req.body.room] != null) {
         req.flash('roomExist','Given room name already exists!')
         return res.redirect('/')
@@ -90,37 +103,27 @@ app.post('/room', async (req, res) => {
         }
 
     } catch {
-        console.log('Error while saving data in database');
         res.redirect('/');
     }
-});
-
-// redirecting to room
-app.get('/:room',authenticateRooms,(req, res) => {});
-
-// serving rooms and finding in databse 
-app.post('/findroom', getRoom ,(req,res)=>{})
-
-app.post('/leave',(req,res)=>{
-    res.redirect('/');
-})
+    next();
+}
 
 function authenticateRooms(req,res,next) {
     if (rooms[req.params.room] == null) {
-        req.flash('roomDoesNotExist','Given room name does not exists!');
+        req.flash('roomDoesNotExist','We could not verify your credentials. Please double-check and try again.');
         return res.redirect('/')
     }
     if (req.query.t != undefined) {
         const token = req.query.t;
         jwt.verify(token,process.env.ACCESS_TOKEN_SECRET,(err,room)=>{
             if(err) {
-                req.flash('unauthorisedToken','Invalid token');
-                return res.redirect('/');
+                req.flash('unauthorisedToken','Invalid token. Please fill the required fields to get access');
+                return res.redirect('/login');
             }else{
                 if (req.params.room == room.room) {
                     res.render('room', { roomName: room.room });
                 }else{
-                    req.flash('unauthorisedToken','Authentication failed');
+                    req.flash('unauthorisedToken','We could not verify your credentials. Please double-check and try again.');
                     return res.redirect('/');
                 }
             }
@@ -129,7 +132,7 @@ function authenticateRooms(req,res,next) {
         authenticate = false;
         res.render('room', { roomName: req.params.room });
     } else {
-        req.flash('reqAuthentication','Please authenticate yourself by entering room name and password!');
+        req.flash('reqAuthentication','We could not verify your credentials. Please double-check and try again.');
         res.redirect('/login');
     }
     next();
@@ -153,7 +156,7 @@ function getRoom(req, res, next) {
                     res.redirect(req.body.room)
                 }
                 else {
-                    req.flash('incorrectPassword','Given password was incorrect!')
+                    req.flash('incorrectPassword','We could not verify your credentials. Please double-check and try again.')
                     res.redirect('/login')
                 }
 
@@ -186,7 +189,7 @@ io.on('connection', (socket) => {
 
     //invitation code
     socket.on('generateInvitationCode',(room,modifiedUrl)=>{
-        const accessToken = jwt.sign({room:room},process.env.ACCESS_TOKEN_SECRET,{ expiresIn: 60*2 });
+        const accessToken = jwt.sign({room:room},process.env.ACCESS_TOKEN_SECRET,{ expiresIn: 60*5 });
         const newUrl = modifiedUrl + '/' + room + '?t=' + accessToken;
         io.to(socket.id).emit('invite',newUrl);
     });
