@@ -505,3 +505,29 @@ div#close b{
     cursor: pointer;
     margin: 10px 10px;
 }
+
+/* Modifying image and video in user_container */
+
+.modified_media{
+    box-shadow: 7px 6px 8px #ccc;
+    border-radius: 20px;
+    max-width: 30%;
+    margin: 1% 1.2%;
+}
+
+.modified_media:hover {
+    cursor: pointer;
+    max-width: 50%;
+}
+
+/* Red Cherry theme */
+
+.modified_media .cherrymodifiedmedia{
+    box-shadow: 7px 6px 8px #b76666;
+}
+
+/* Dark Theme */
+
+.modified_media .darkmodifiedmedia{
+    box-shadow: 7px 6px 8px #121212;
+}
