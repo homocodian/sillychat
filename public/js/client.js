@@ -1,3 +1,5 @@
+const e = require("express");
+
 // socket connection
 const socket = io("http://localhost:3000");
 
@@ -206,12 +208,19 @@ function darkMode() {
     var user_container = document.querySelector('.user-container');
     var dark_setting_menu = document.getElementById('setting-menu');
     let dark_invite_menu = document.getElementById('invitation-popup');
+    var media = document.querySelectorAll('.modified_media');
+    console.log(media)
     if (darkModeDecider.checked) {
         document.body.classList.add('dark');
         broadcast.classList.add('darkMessageBox');
         user_container.classList.add('dark-user-container');
         dark_invite_menu.classList.add('dark-invitation-popup');
         dark_setting_menu.classList.add('dark-setting-menu');
+        // if (media.length != 0) {
+        //     media.forEach(element => {
+        //         element.style.boxShadow = "7px 6px 8px #121212";
+        //     });
+        // }
         messageBox.forEach(box => {
             box.classList.add('darkTextMessageBox');
         });
@@ -221,6 +230,11 @@ function darkMode() {
         user_container.classList.remove('dark-user-container');
         dark_invite_menu.classList.remove('dark-invitation-popup');
         dark_setting_menu.classList.remove('dark-setting-menu');
+        // if (media.length != 0) {
+        //     media.forEach(element => {
+        //         element.style.boxShadow = "empty";
+        //     });
+        // }
         messageBox.forEach(box => {
             box.classList.remove('darkTextMessageBox');
         });
@@ -253,6 +267,11 @@ function redcherry() {
         cherry_setting_menu.classList.add('cherry-setting-menu');
         cherry_invite_menu.classList.add('cherry-invitation-popup');
         user_container.classList.add('cherryinfobox');
+        // if (media.length != 0) {
+        //     media.forEach(element => {
+        //         element.style.boxShadow = "7px 6px 8px #b76666";
+        //     });
+        // }
         messageBox.forEach(box => {
             box.classList.add('cherrymsg');
         });
@@ -267,6 +286,11 @@ function redcherry() {
         cherry_setting_menu.classList.remove('cherry-setting-menu');
         cherry_invite_menu.classList.remove('cherry-invitation-popup');
         user_container.classList.remove('cherryinfobox');
+        // if (media.length != 0) {
+        //     media.forEach(element => {
+        //         element.style.boxShadow = "empty";
+        //     });
+        // }
         messageBox.forEach(box => {
             box.classList.remove('cherrymsg');
         });
