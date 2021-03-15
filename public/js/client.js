@@ -1,5 +1,3 @@
-const e = require("express");
-
 // socket connection
 const socket = io("http://localhost:3000");
 
@@ -65,15 +63,20 @@ socket.on('greeting',greeting =>{
     append(greeting,'right');
 })
 
+// for invitation
+socket.on('invite',(code)=>{
+    invitationUrl = code
+});
+
 // messages from server
 socket.on('receive', message => {
     append(message, 'left');
 });
 
-// for invitation
-socket.on('invite',(code)=>{
-    invitationUrl = code
-});
+// media from server
+socket.on('media',media =>{
+    mediaLayout(media,'left');
+})
 
 // those users who are offline
 socket.on('left', name => {
@@ -151,6 +154,69 @@ const append = (message, position) => {
     
 }
 
+// media view layout
+function mediaLayout(media,position) {
+    if (message.substring(0,8) === "uploads/") {
+        if (message.substring(message.length -3,message.length) === "mp4") {
+            const video = document.createElement('video');
+            video.src = `http://localhost:3000/${message}`;
+            video.type = "video/mp4";
+            video.alt = 'video';
+            video.controls = "controls";
+            video.autoplay = "autoplay";
+            video.muted = "true";
+            video.classList.add('modified_media');
+            video.classList.add(position);
+            if (darkModeDecider.checked) {
+                messageElement.style.boxShadow = "7px 6px 8px #121212";
+            }
+            else if (redcherryDecider.checked) {
+                messageElement.style.boxShadow = "7px 6px 8px #b76666";
+            }
+            broadcast.append(video);
+        }else{
+            const img = document.createElement('img');
+            img.src = `http://localhost:3000/${message}`;
+            img.alt = 'image';
+            video.classList.add('modified_media');
+            video.classList.add(position);
+            if (darkModeDecider.checked) {
+                messageElement.style.boxShadow = "7px 6px 8px #121212";
+            }
+            else if (redcherryDecider.checked) {
+                messageElement.style.boxShadow = "7px 6px 8px #b76666";
+            }
+            broadcast.append(img);
+        }
+    }
+    scrollup();
+    if (position == 'left') {
+        audio.play();
+    }
+}
+
+//media upload
+function SendFile(files) {
+    let formData = new FormData;
+    const config = {
+        header : { "content-type" : "multipart/form-data" }
+    }
+    formData.append('file',files[0]);
+
+    axios.post('api/sillychat/uploadfiles',formData,config)
+        .then(response=>{
+            file_input.value = '';
+            if (response.data.success) {
+                let media = response.data.url;
+                console.log(media);
+                socket.emit('media', media);
+            }
+        })
+        .catch(err =>{
+            console.warn(err);
+        })
+}
+
 // current for users
 function get_current_time(date) {
     var hours = date.getHours();
@@ -216,11 +282,11 @@ function darkMode() {
         user_container.classList.add('dark-user-container');
         dark_invite_menu.classList.add('dark-invitation-popup');
         dark_setting_menu.classList.add('dark-setting-menu');
-        // if (media.length != 0) {
-        //     media.forEach(element => {
-        //         element.style.boxShadow = "7px 6px 8px #121212";
-        //     });
-        // }
+        if (media.length != 0) {
+            media.forEach(element => {
+                element.style.boxShadow = "7px 6px 8px #121212";
+            });
+        }
         messageBox.forEach(box => {
             box.classList.add('darkTextMessageBox');
         });
@@ -230,16 +296,16 @@ function darkMode() {
         user_container.classList.remove('dark-user-container');
         dark_invite_menu.classList.remove('dark-invitation-popup');
         dark_setting_menu.classList.remove('dark-setting-menu');
-        // if (media.length != 0) {
-        //     media.forEach(element => {
-        //         element.style.boxShadow = "empty";
-        //     });
-        // }
+        if (media.length != 0) {
+            media.forEach(element => {
+                element.style.boxShadow = "";
+            });
+        }
         messageBox.forEach(box => {
             box.classList.remove('darkTextMessageBox');
         });
+        scrollup();
     }
-    scrollup();
 }
 
 // RedCherry Theme
@@ -256,6 +322,7 @@ function redcherry() {
     const roomname_box = document.getElementById('roomname');
     const username_box = document.getElementById('users-name');
     const userbutton_box = document.querySelectorAll('.userButtons');
+    var media = document.querySelectorAll('.modified_media');
     if (redcherryDecider.checked) {
         document.body.classList.add('cherry');
         broadcast.classList.add('cherrybgimg');
@@ -267,11 +334,11 @@ function redcherry() {
         cherry_setting_menu.classList.add('cherry-setting-menu');
         cherry_invite_menu.classList.add('cherry-invitation-popup');
         user_container.classList.add('cherryinfobox');
-        // if (media.length != 0) {
-        //     media.forEach(element => {
-        //         element.style.boxShadow = "7px 6px 8px #b76666";
-        //     });
-        // }
+        if (media.length != 0) {
+            media.forEach(element => {
+                element.style.boxShadow = "7px 6px 8px #b76666";
+            });
+        }
         messageBox.forEach(box => {
             box.classList.add('cherrymsg');
         });
@@ -286,11 +353,11 @@ function redcherry() {
         cherry_setting_menu.classList.remove('cherry-setting-menu');
         cherry_invite_menu.classList.remove('cherry-invitation-popup');
         user_container.classList.remove('cherryinfobox');
-        // if (media.length != 0) {
-        //     media.forEach(element => {
-        //         element.style.boxShadow = "empty";
-        //     });
-        // }
+        if (media.length != 0) {
+            media.forEach(element => {
+                element.style.boxShadow = "";
+            });
+        }
         messageBox.forEach(box => {
             box.classList.remove('cherrymsg');
         });

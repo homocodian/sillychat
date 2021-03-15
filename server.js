@@ -57,13 +57,13 @@ const botName = 'Bot';
 
 // rendering home page
 app.get('/', (req, res) => {
-    res.render('Room Creator',{ rooms: rooms, findingError:req.flash('errFinding'), roomDoesNotExist:req.flash('roomDoesNotExist'), roomExistence:req.flash('roomExist'),unauthorizedToken:req.flash('unauthorisedToken')});
+    res.render('home',{ rooms: rooms, findingError:req.flash('errFinding'), roomDoesNotExist:req.flash('roomDoesNotExist'), roomExistence:req.flash('roomExist'),unauthorizedToken:req.flash('unauthorisedToken')});
 });
 
 
 // rendering login page
 app.get('/login', (req, res) => {
-    res.render('Login page',
+    res.render('login',
     { authentication:req.flash('reqAuthentication'),incorrect:req.flash('incorrectPassword')});
 });
 

@@ -7,6 +7,7 @@
     <meta name="description" content="sillychat.in is the best place for conversation,chatting and discussion if you are worried about your privacy because it does not take anything from you and it is very simple to use, just make password protected room and invite your known persons and start your discussion and for more info visit about page">
     <title>sillychat.in || Do your conversation, discussion,chatting privately and for more info visit about page
     </title>
+    <link rel="shortcut icon" href="../favicon.png" type="image/x-icon">
     <link rel="preconnect" href="https://fonts.gstatic.com">
     <link href="https://fonts.googleapis.com/css2?family=Noto+Sans+JP&display=swap" rel="stylesheet">
     <link rel="stylesheet" href="/css/room.css">
@@ -81,7 +82,10 @@
             <img class = "right modified_media" src="https://cdn.pixabay.com/photo/2020/06/12/14/07/code-5290465__480.jpg" alt="error">
             <img class = "right modified_media" src="https://encrypted-tbn0.gstatic.com/images?q=tbn:ANd9GcTmU-UrQPq2KkOBsWAh1S5A3IQgedWLv7F07Q2ZtY8S6pVdXC24l96s_dQ&s=10" alt="error">
             <img class = "right modified_media" src="https://encrypted-tbn0.gstatic.com/images?q=tbn:ANd9GcTImMt4HEiXqHPYJUH_-2Vescdr--R9W0hvhFdUzTE7-eoqVeaZNgu1w50&s=10" alt="error">
-            <video class = "right modified_media" src="https://www.learningcontainer.com/wp-content/uploads/2020/05/sample-mp4-file.mp4" type = "video/mp4 controls"></video>
+            <video class="modified_media left" controls autoplay muted>
+                <source src="https://www.learningcontainer.com/wp-content/uploads/2020/05/sample-mp4-file.mp4" type="video/mp4">
+                Your browser does not support the video tag.
+            </video>
         </div>
 
         <!-- message input bar  -->
@@ -89,7 +93,7 @@
             <input type="text" name="message" id="message-input" class="input" placeholder="Type a message..." style="display: none;" required>
             <div class="image-upload">
                 <label id="file-image-logo" for="file-input" style="display: none;">
-                    <img src="https://img.icons8.com/plasticine/100/000000/image.png" id="send-image-button" onclick="imageSelection()"/>
+                    <img src="https://img.icons8.com/plasticine/100/000000/image.png" id="send-image-button" onclick="sendFile(files)"/>
                 </label>
                 <input id="file-input" name="file-input" type="file" accept="image/x-png,image/gif,image/jpeg"/>
             </div>
@@ -150,8 +154,6 @@
     <script type="text/javascript">
         $(document).ready(function() {
             $("#message-input").emojioneArea();
-            $('#file-image-logo').css('display','block');
-            $('#sendButton').css('display','inline-block');
         });
     </script>
 </body>
