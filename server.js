@@ -13,6 +13,16 @@ const flash = require('connect-flash');
 const formatMessage = require('./utils/message.js');
 // json web tokens for authorization
 const jwt = require('jsonwebtoken');
+// multer for uploading
+const multer = require('multer');
+// path
+const path = require('path');
+// fs
+const fs = require('fs');
+
+// multer config
+const storage =  require('./utils/storage');
+const { fileLoader } = require('ejs');
 
 // declaring it as express app
 const app = express();
@@ -33,11 +43,13 @@ app.set('views', './views');
 // setting view engine
 app.set('view engine', 'ejs');
 
+// json
+app.use(express.json());
 
 // serving static files so it can be acces by server
 app.use(express.static('public'));
 
-
+var upload = multer({ storage: storage }).single('file');
 
 // getting values from client sites
 app.use(express.urlencoded({ extended: true }))
@@ -54,12 +66,41 @@ const rooms = {}
 let authenticate = false;
 const botName = 'Bot';
 
+const fsp = require('fs').promises;
+const oneHour = 1000 * 60 * 5;
+
+// run cleanup once per hour
+let cleanupTimer = setInterval(async () => {
+    const downloadRoot = 'uploads/'
+    let oneHourOld = Date.now() - oneHour;
+    try {
+        let files = await fsp.readdir(downloadRoot, {withFileTypes: true});
+        for (let f of files) {
+             if (f.isFile()) {
+                 let fullName = path.join(__dirname +'/' + downloadRoot, f.name);
+                 let info = await fsp.stat(fullName);
+                 // if file modification time is older than one hour, remove it
+                 if (info.mtimeMs <= oneHourOld) {
+                     fsp.unlink(fullName).catch(err => {
+                         // log error, but continue
+                         console.log(`Can't remove temp download file ${fullName}`, err);
+                     });
+                 }
+             }
+        }
+    } catch(e) {
+        console.log(e);
+    }
+    
+}, oneHour);
+
+// unref the timer so it doesn't stop node.js from exiting naturally
+cleanupTimer.unref();
 
 // rendering home page
 app.get('/', (req, res) => {
     res.render('home',{ rooms: rooms, findingError:req.flash('errFinding'), roomDoesNotExist:req.flash('roomDoesNotExist'), roomExistence:req.flash('roomExist'),unauthorizedToken:req.flash('unauthorisedToken')});
 });
-
 
 // rendering login page
 app.get('/login', (req, res) => {
@@ -67,11 +108,22 @@ app.get('/login', (req, res) => {
     { authentication:req.flash('reqAuthentication'),incorrect:req.flash('incorrectPassword')});
 });
 
-// posting room page,getting values from client site and saving room datas into database
-app.post('/room',postRooms,(req, res) => {});
-
 // redirecting to room
 app.get('/:room',authenticateRooms,(req, res) => {});
+
+// handling downloads
+const downloadRoot = './uploads/'
+app.get("/uploads/:id", (req, res) => {
+    const fullPath = path.resolve(path.join(downloadRoot, req.params.id));
+    res.download(fullPath, (err) => {
+        if (err) {
+            console.log(err);
+        }
+    })
+});
+
+// posting room page,getting values from client site and saving room datas into database
+app.post('/room',postRooms,(req, res) => {});
 
 // serving rooms and finding in databse 
 app.post('/findroom', getRoom ,(req,res)=>{})
@@ -79,6 +131,16 @@ app.post('/findroom', getRoom ,(req,res)=>{})
 app.post('/leave',(req,res)=>{
     res.redirect('/');
 })
+
+// handling upload
+app.post("/api/sillychat/uploadfiles", (req, res) => {
+    upload(req, res, err => {
+        if (err) {
+            return res.json({ success: false, err });
+        }
+        return res.json({ success: true, url: `uploads` + '/' + req.file.filename });
+    });
+});
 
 //posting all rooms necessary details to the server
 async function postRooms(req,res,next) {
@@ -197,6 +259,11 @@ io.on('connection', (socket) => {
     // sending and receiving message
     socket.on('send', (room, message) => {
         socket.to(room).broadcast.emit('receive',formatMessage(rooms[room].users[socket.id],message))
+    });
+    
+    // receiving and sending media
+    socket.on('media', (Username,media) => {
+        socket.broadcast.emit('media', formatMessage(Username,media));
     });
     
     // handling disconnection and deleting rooms form databases

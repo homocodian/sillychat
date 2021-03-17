@@ -1,7 +1,8 @@
 // socket connection
 const socket = io("http://localhost:3000");
 
-// neccessary variables 
+// neccessary variables
+let Username = null;
 let setting_menu_closed = true;
 const form = document.getElementById('text-mess');
 const messageInput = document.getElementById('message-input');
@@ -18,7 +19,7 @@ var audio = new Audio('Receive.mp3');
 // taking user name and sending to server 
 if (broadcast != null) {
     while (true) {
-        const Username = prompt("Enter you name", "Anonymous");
+        Username = prompt("Enter you name", "Anonymous");
         if (Username == null) {
         alert('Name is necessery');
         }else{
@@ -39,14 +40,6 @@ if (broadcast != null) {
         messageBox.focus();
     });
 }
-
-// One-liner to resume playback when user interacted with the page.
-// document.querySelector('#sendButton').addEventListener('click', function() {
-//     audio.resume().then(() => {
-//         console.log('Playback resumed successfully');
-//     });
-// });
-  
 
 // user join event
 socket.on('user-joined', name => {
@@ -76,7 +69,7 @@ socket.on('receive', message => {
 // media from server
 socket.on('media',media =>{
     mediaLayout(media,'left');
-})
+});
 
 // those users who are offline
 socket.on('left', name => {
@@ -156,30 +149,29 @@ const append = (message, position) => {
 
 // media view layout
 function mediaLayout(media,position) {
-    if (message.substring(0,8) === "uploads/") {
-        if (message.substring(message.length -3,message.length) === "mp4") {
-            const video = document.createElement('video');
-            video.src = `http://localhost:3000/${message}`;
-            video.type = "video/mp4";
-            video.alt = 'video';
-            video.controls = "controls";
-            video.autoplay = "autoplay";
-            video.muted = "true";
-            video.classList.add('modified_media');
+    if (media.text.substring(0,8) === "uploads/") {
+        if (media.text.substring(media.text.length -3,media.text.length) === "mp4") {
+            const video = document.createElement('div');
+            video.innerHTML = `<div><span class="modified_media_meta">${media.name}: ${media.time}</span><a href="http://localhost:3000/${media.text}"><i class="fas fa-download"></i></a></div>
+            <video class="modified_media left" controls autoplay muted>
+            <source src="http://localhost:3000/${media.text}" type="video/mp4">
+            Your browser does not support the video tag.
+            </video>`
             video.classList.add(position);
             if (darkModeDecider.checked) {
                 messageElement.style.boxShadow = "7px 6px 8px #121212";
             }
             else if (redcherryDecider.checked) {
+                video.style.backgroundColor ="#66afe999";
                 messageElement.style.boxShadow = "7px 6px 8px #b76666";
             }
             broadcast.append(video);
+            scrollup();
         }else{
-            const img = document.createElement('img');
-            img.src = `http://localhost:3000/${message}`;
-            img.alt = 'image';
-            video.classList.add('modified_media');
-            video.classList.add(position);
+            const img = document.createElement('div');
+            img.innerHTML = `<div><span class="modified_media_meta">${media.name}: ${media.time}</span><a href="http://localhost:3000/${media.text}"><i class="fas fa-download"></i></a></div>
+            <img class="modified_media" src="http://localhost:3000/${media.text}" alt="image">`
+            img.classList.add(position);
             if (darkModeDecider.checked) {
                 messageElement.style.boxShadow = "7px 6px 8px #121212";
             }
@@ -187,6 +179,7 @@ function mediaLayout(media,position) {
                 messageElement.style.boxShadow = "7px 6px 8px #b76666";
             }
             broadcast.append(img);
+            scrollup();
         }
     }
     scrollup();
@@ -196,7 +189,7 @@ function mediaLayout(media,position) {
 }
 
 //media upload
-function SendFile(files) {
+function sendFile(files) {
     let formData = new FormData;
     const config = {
         header : { "content-type" : "multipart/form-data" }
@@ -205,11 +198,10 @@ function SendFile(files) {
 
     axios.post('api/sillychat/uploadfiles',formData,config)
         .then(response=>{
-            file_input.value = '';
+            document.getElementById('file-input').value = '';
             if (response.data.success) {
                 let media = response.data.url;
-                console.log(media);
-                socket.emit('media', media);
+                socket.emit('media', Username,media);
             }
         })
         .catch(err =>{
@@ -275,35 +267,45 @@ function darkMode() {
     var dark_setting_menu = document.getElementById('setting-menu');
     let dark_invite_menu = document.getElementById('invitation-popup');
     var media = document.querySelectorAll('.modified_media');
-    console.log(media)
+    var media_meta = document.querySelectorAll('.modified_media_meta');
     if (darkModeDecider.checked) {
         document.body.classList.add('dark');
         broadcast.classList.add('darkMessageBox');
         user_container.classList.add('dark-user-container');
         dark_invite_menu.classList.add('dark-invitation-popup');
         dark_setting_menu.classList.add('dark-setting-menu');
+        messageBox.forEach(box => {
+            box.classList.add('darkTextMessageBox');
+        });
         if (media.length != 0) {
             media.forEach(element => {
                 element.style.boxShadow = "7px 6px 8px #121212";
             });
         }
-        messageBox.forEach(box => {
-            box.classList.add('darkTextMessageBox');
-        });
+        if (media_meta.length != 0) {
+            media_meta.forEach(meta => {
+                meta.style.backgroundColor = 'aliceblue';
+            });
+        }
     } else {
         document.body.classList.remove('dark');
         broadcast.classList.remove('darkMessageBox');
         user_container.classList.remove('dark-user-container');
         dark_invite_menu.classList.remove('dark-invitation-popup');
         dark_setting_menu.classList.remove('dark-setting-menu');
+        messageBox.forEach(box => {
+            box.classList.remove('darkTextMessageBox');
+        });
         if (media.length != 0) {
             media.forEach(element => {
                 element.style.boxShadow = "";
             });
         }
-        messageBox.forEach(box => {
-            box.classList.remove('darkTextMessageBox');
-        });
+        if (media_meta.length != 0) {
+            media_meta.forEach(meta => {
+                meta.style.backgroundColor = '';
+            });
+        }
         scrollup();
     }
 }

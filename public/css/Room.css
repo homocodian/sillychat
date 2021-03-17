@@ -511,7 +511,7 @@ div#close b{
 .modified_media{
     box-shadow: 7px 6px 8px #ccc;
     border-radius: 3px;
-    max-width: 30%;
+    max-width: 35%;
     margin: 1% 1.2%;
     outline: none;
 }
@@ -519,4 +519,11 @@ div#close b{
 .modified_media:hover {
     cursor: pointer;
     max-width: 50%;
+}
+
+.modified_media_meta {
+    color: #111;
+    font-size: smaller;
+    margin: 1% 1.2%;
+    padding: 0px 4px;
 }

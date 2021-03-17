@@ -26,5 +26,10 @@ const roomDataScheme = new mongoose.Schema({
 
 // converting schema into model to use it in db
 const roomInfo = mongoose.model('roomdata', roomDataScheme);
+roomInfo.deleteMany().then(function(){ 
+    console.log("Previous data deleted"); // Success 
+}).catch(function(error){ 
+    console.log(error); // Failure 
+});
 
 module.exports = roomInfo;

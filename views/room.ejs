@@ -18,6 +18,7 @@
         const roomName = "<%= roomName%>"
     </script>
     <script defer src="http://localhost:3000/socket.io/socket.io.js"></script>
+    <script defer src="https://cdn.jsdelivr.net/npm/axios/dist/axios.min.js"></script>
     <script defer src="/js/client.js"></script>
     <script defer src="/js/responsive.js"></script>
 </head>
@@ -78,26 +79,18 @@
             </div>
         </aside>
         <!-- message container -->
-        <div class="message-container">
-            <img class = "right modified_media" src="https://cdn.pixabay.com/photo/2020/06/12/14/07/code-5290465__480.jpg" alt="error">
-            <img class = "right modified_media" src="https://encrypted-tbn0.gstatic.com/images?q=tbn:ANd9GcTmU-UrQPq2KkOBsWAh1S5A3IQgedWLv7F07Q2ZtY8S6pVdXC24l96s_dQ&s=10" alt="error">
-            <img class = "right modified_media" src="https://encrypted-tbn0.gstatic.com/images?q=tbn:ANd9GcTImMt4HEiXqHPYJUH_-2Vescdr--R9W0hvhFdUzTE7-eoqVeaZNgu1w50&s=10" alt="error">
-            <video class="modified_media left" controls autoplay muted>
-                <source src="https://www.learningcontainer.com/wp-content/uploads/2020/05/sample-mp4-file.mp4" type="video/mp4">
-                Your browser does not support the video tag.
-            </video>
-        </div>
+        <div class="message-container"></div>
 
         <!-- message input bar  -->
         <form method="post" id="text-mess">
             <input type="text" name="message" id="message-input" class="input" placeholder="Type a message..." style="display: none;" required>
             <div class="image-upload">
-                <label id="file-image-logo" for="file-input" style="display: none;">
-                    <img src="https://img.icons8.com/plasticine/100/000000/image.png" id="send-image-button" onclick="sendFile(files)"/>
+                <label id="file-image-logo" for="file-input" >
+                    <img src="https://img.icons8.com/plasticine/100/000000/image.png" id="send-image-button"/>
                 </label>
-                <input id="file-input" name="file-input" type="file" accept="image/x-png,image/gif,image/jpeg"/>
+                <input id="file-input" name="file" type="file" accept="image/x-png,image/gif,image/jpeg,video/mp4" onchange="sendFile(files)"/>
             </div>
-            <button style="display: none;" type="submit" id="sendButton">Send</button>
+            <button type="submit" id="sendButton">Send</button>
         </form>
     </div>
     
