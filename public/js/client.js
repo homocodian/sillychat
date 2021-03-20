@@ -93,6 +93,11 @@ function findUser(Ids) {
     }
 }
 
+// for scrolling 
+function scrollup() {
+    broadcast.scrollTop = broadcast.scrollHeight;
+}
+
 // // pushing users to client
 function newUser(name) {
     var div = document.createElement('div');
@@ -151,34 +156,57 @@ const append = (message, position) => {
 function mediaLayout(media,position) {
     if (media.text.substring(0,8) === "uploads/") {
         if (media.text.substring(media.text.length -3,media.text.length) === "mp4") {
-            const video = document.createElement('div');
-            video.innerHTML = `<div><span class="modified_media_meta">${media.name}: ${media.time}</span><a href="http://localhost:3000/${media.text}"><i class="fas fa-download"></i></a></div>
-            <video class="modified_media left" controls autoplay muted>
-            <source src="http://localhost:3000/${media.text}" type="video/mp4">
-            Your browser does not support the video tag.
-            </video>`
+            const div = document.createElement('div');
+            const span = document.createElement('span');
+            const downloadLink = document.createElement('a');
+            const video = document.createElement('video');
+            downloadLink.href = `http://localhost:3000/${media.text}`;
+            downloadLink.innerHTML = `<i class="fas fa-download" style="margin:0px 0px 0px 10px"></i>`;
+            span.innerHTML = `${media.name}: ${media.time}`;
+            video.src = `http://localhost:3000/${media.text}`;
+            video.autoplay = true;
+            video.muted = true;
+            video.controls = true;
+            span.classList.add("modified_media_meta");
+            span.classList.add(position);
+            video.classList.add('modified_media');
             video.classList.add(position);
             if (darkModeDecider.checked) {
-                messageElement.style.boxShadow = "7px 6px 8px #121212";
+                span.style.backgroundColor = 'aliceblue';
+                video.style.boxShadow = "7px 6px 8px #121212";
             }
             else if (redcherryDecider.checked) {
                 video.style.backgroundColor ="#66afe999";
-                messageElement.style.boxShadow = "7px 6px 8px #b76666";
+                video.style.boxShadow = "7px 6px 8px #b76666";
             }
-            broadcast.append(video);
+            span.appendChild(downloadLink);
+            div.append(span);
+            broadcast.append(div,video);
             scrollup();
         }else{
-            const img = document.createElement('div');
-            img.innerHTML = `<div><span class="modified_media_meta">${media.name}: ${media.time}</span><a href="http://localhost:3000/${media.text}"><i class="fas fa-download"></i></a></div>
-            <img class="modified_media" src="http://localhost:3000/${media.text}" alt="image">`
+            const div = document.createElement('div');
+            const span = document.createElement('span');
+            const downloadLink = document.createElement('a');
+            const img = document.createElement('img');
+            downloadLink.href = `http://localhost:3000/${media.text}`;
+            downloadLink.innerHTML = `<i class="fas fa-download" style="margin:0px 0px 0px 10px"></i>`;
+            span.innerHTML = `${media.name}: ${media.time}`;
+            img.src = `http://localhost:3000/${media.text}`;
+            span.classList.add("modified_media_meta");
+            span.classList.add(position);
+            img.classList.add('modified_media');
             img.classList.add(position);
             if (darkModeDecider.checked) {
-                messageElement.style.boxShadow = "7px 6px 8px #121212";
+                span.style.backgroundColor = 'aliceblue';
+                img.style.boxShadow = "7px 6px 8px #121212";
             }
             else if (redcherryDecider.checked) {
-                messageElement.style.boxShadow = "7px 6px 8px #b76666";
+                video.style.backgroundColor ="#66afe999";
+                img.style.boxShadow = "7px 6px 8px #b76666";
             }
-            broadcast.append(img);
+            span.appendChild(downloadLink);
+            div.append(span);
+            broadcast.append(div,img);
             scrollup();
         }
     }
@@ -188,8 +216,60 @@ function mediaLayout(media,position) {
     }
 }
 
+//media for client
+var loadFile = function(event) {
+    var reader = new FileReader();
+    reader.onload = function(){
+        let data = `${reader.result}`;
+        let extractedData = data.split(";");
+        let extName = extractedData[0].split("/");
+        const ext = extName[1];
+        if (ext == 'mp4') {
+            const video = document.createElement('video');
+            video.classList.add('modified_media');
+            video.classList.add('right');
+            video.classList.add('modified_media_margins');
+            video.controls = true;
+            video.autoplay = true;
+            video.muted = true;
+            video.src = reader.result;
+            if (darkModeDecider.checked) {
+                video.style.boxShadow = "7px 6px 8px #121212";
+            }else if (redcherryDecider.checked) {
+                video.style.boxShadow = "7px 6px 8px #b76666";
+            }
+            broadcast.append(video);
+        }else{
+            const img = document.createElement('img');
+            img.alt = 'image';
+            img.classList.add('modified_media');
+            img.classList.add('right');
+            img.classList.add('modified_media_margins');
+            img.src = reader.result;
+            if (darkModeDecider.checked) {
+                img.style.boxShadow = "7px 6px 8px #121212";
+            }else if (redcherryDecider.checked) {
+                img.style.boxShadow = "7px 6px 8px #b76666";
+            }
+            broadcast.append(img);
+            scrollup();
+        }
+        scrollup();
+    };
+    scrollup();
+    reader.readAsDataURL(event.target.files[0]);
+    scrollup();
+};
+
 //media upload
-function sendFile(files) {
+function sendFile(files,event) {
+    maxSize = 10602144;
+    if (files[0].size > maxSize) {
+        alert("Try choosing file below 10 mb");
+        document.getElementById('file-input').value = '';
+        return;
+    }else{
+        loadFile(event);
     let formData = new FormData;
     const config = {
         header : { "content-type" : "multipart/form-data" }
@@ -201,12 +281,13 @@ function sendFile(files) {
             document.getElementById('file-input').value = '';
             if (response.data.success) {
                 let media = response.data.url;
-                socket.emit('media', Username,media);
+                socket.emit('media', Username,roomName,media);
             }
         })
         .catch(err =>{
             console.warn(err);
         })
+    }
 }
 
 // current for users
@@ -219,11 +300,6 @@ function get_current_time(date) {
     minutes = minutes < 10 ? '0'+minutes : minutes;
     var currentTime = hours + ':' + minutes + ' ' + ampm;
     return currentTime;
-}
-
-// for scrolling 
-function scrollup() {
-    broadcast.scrollTop = broadcast.scrollHeight
 }
 
 // setting menu

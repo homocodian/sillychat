@@ -22,7 +22,6 @@ const fs = require('fs');
 
 // multer config
 const storage =  require('./utils/storage');
-const { fileLoader } = require('ejs');
 
 // declaring it as express app
 const app = express();
@@ -262,8 +261,8 @@ io.on('connection', (socket) => {
     });
     
     // receiving and sending media
-    socket.on('media', (Username,media) => {
-        socket.broadcast.emit('media', formatMessage(Username,media));
+    socket.on('media', (Username,roomName,media) => {
+        socket.to(roomName).emit('media', formatMessage(Username,media));
     });
     
     // handling disconnection and deleting rooms form databases

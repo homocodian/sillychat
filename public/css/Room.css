@@ -527,3 +527,7 @@ div#close b{
     margin: 1% 1.2%;
     padding: 0px 4px;
 }
+
+.modified_media_margins {
+    margin: 10px 15px;
+}
