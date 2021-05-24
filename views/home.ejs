@@ -2,90 +2,126 @@
 <html lang="en">
 
 <head>
-    <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
     <link rel="shortcut icon" href="../favicon.png" type="image/x-icon">
-    <link rel="stylesheet" href="/css/home.css">
-    <link rel="preconnect" href="https://fonts.gstatic.com">
-    <link href="https://fonts.googleapis.com/css2?family=Noto+Sans:wght@700&family=Yusei+Magic&display=swap" rel="stylesheet">
-    <title>Chat Room</title>
+    <link rel="stylesheet" href="/css/home.css" />
+    <title>Sillychat</title>
 </head>
 
 <body>
-    <nav id="navbar">
-        <ul>
-            <li>
-                <a href="/">Create Room</a>
-            </li>
-            <li>
-                <a href="/login">Join Room</a>
-            </li>
-            <li>
-                <a href="">About</a>
-            </li>
-            <li>
-                <a href="">Feedback</a>
-            </li>
-            <li>
-                <a href="">Contact</a>
-            </li>
-        </ul>
-    </nav>
-    <% if(roomExistence.length > 0) { %>
-        <div class="alert">
-            <span class="closebtn" onclick="this.parentElement.style.display='none';">&times;</span>
-            <%= roomExistence%>
-        </div>
-    <% }%>
-
-    <% if(unauthorizedToken.length > 0) { %>
-        <div class="alert">
-            <span class="closebtn" onclick="this.parentElement.style.display='none';">&times;</span>
-            <%= unauthorizedToken%>
-        </div>
-    <% }%>
-
-    <% if(findingError.length > 0) { %>
-        <div class="alert">
-            <span class="closebtn" onclick="this.parentElement.style.display='none';">&times;</span>
-            <%= findingError%>
-        </div>
-    <% }%>
-    
-    <% if(roomDoesNotExist.length > 0) { %>
-        <div class="alert">
-            <span class="closebtn" onclick="this.parentElement.style.display='none';">&times;</span>
-            <%= roomDoesNotExist%>
-        </div>
-    <% }%>
     <div class="container">
-        <form action="/room" method="post" id="room-box">
-            <h2>Create Private Chat Room</h2>
-            <input type="text" name="room" id="room-name" placeholder="Name" required>
-            <input type="password" name="roomPassword" id="room-pass" placeholder="Password" required>
-            <button type='submit' id='create-room-btn'>Create Room</button>
-        </form>
-    </div>
-    <!-- <script>
-        const password = document.getElementById('room-pass');
-        const roomCreatorButton = document.getElementById('create-room-btn');
+        <div class="forms-container">
+            <div class="signin-signup" id="room-creator">
+                <% if(roomExistence.length> 0) { %>
+                    <div class="alert">
+                        <span class="closebtn" onclick="this.parentElement.style.display='none';">&times;</span>
+                        <%= roomExistence%>
+                    </div>
+                <% }%>
 
-        roomCreatorButton.addEventListener('click',(e)=>{
-            if (password.value == "Password") {
-                alert("Password can not be password")
-                e.preventDefault();
-            }
-            else if (password.value == "password"){
-                alert("Password can not be password")
-                e.preventDefault();
-            }
-            if (password.value.length < 8) {
-                alert("Password must be longer than 8 digit and use symbols and capital letter");
-                e.preventDefault();
-            }
-        })
-        
-    </script> -->
+                <% if(unauthorizedToken.length> 0) { %>
+                    <div class="alert">
+                        <span class="closebtn" onclick="this.parentElement.style.display='none';">&times;</span>
+                        <%= unauthorizedToken%>
+                    </div>
+                <% }%>
+
+                <% if(findingError.length> 0) { %>
+                    <div class="alert">
+                        <span class="closebtn"
+                            onclick="this.parentElement.style.display='none';">&times;</span>
+                        <%= findingError%>
+                    </div>
+                <% }%>
+
+                <% if(roomDoesNotExist.length> 0) { %>
+                    <div class="alert">
+                        <span class="closebtn"
+                            onclick="this.parentElement.style.display='none';">&times;</span>
+                        <%= roomDoesNotExist%>
+                    </div>
+                <% }%>
+
+                <% if(authentication.length> 0) { %>
+                    <div class="alert">
+                        <span class="closebtn"
+                            onclick="this.parentElement.style.display='none';">&times;</span>
+                        <%= authentication%>
+                    </div>
+                <% }%>
+
+                <% if(incorrect.length> 0) { %>
+                    <div class="alert">
+                        <span class="closebtn"
+                            onclick="this.parentElement.style.display='none';">&times;</span>
+                        <%= incorrect%>
+                    </div>
+                <% }%>
+                <form action="/room" method="POST" class="sign-in-form">
+                    <h2 class="title">Create room</h2>
+                    <div class="input-field">
+                        <i class="fas fa-user"></i>
+                        <input type="text" placeholder="Room Name"
+                            name="room" required />
+                    </div>
+                    <div class="input-field">
+                        <i class="fas fa-lock"></i>
+                        <input type="password" name="roomPassword"
+                            placeholder="Password" required />
+                    </div>
+                    <input type="submit" value="Create Room"
+                        class="btn solid" />
+                </form>
+                <form action="/findroom" method="POST"
+                    class="sign-up-form">
+                    <h2 class="title">Join a Room</h2>
+                    <div class="input-field">
+                        <i class="fas fa-user"></i>
+                        <input type="text" placeholder="Room Name"
+                            name="room" />
+                    </div>
+                    <div class="input-field">
+                        <i class="fas fa-lock"></i>
+                        <input type="password" placeholder="Password"
+                            name="roomPassword" />
+                    </div>
+                    <input type="submit" class="btn" value="join" />
+                </form>
+            </div>
+        </div>
+
+        <div class="panels-container">
+            <div class="panel left-panel">
+                <div class="content">
+                    <h3>Sillychat</h3>
+                    <p>
+                        sillychat.in is the best place for secured conversation and discussion.
+                    </p>
+                    <button class="btn transparent" id="sign-up-btn">
+                        Join Room
+                    </button>
+                </div>
+                <img src="/svg/homebg.svg" class="image" alt="" />
+            </div>
+            <div class="panel right-panel" id="login">
+                <div class="content">
+                    Create a new private and secured room.
+                    <br>
+                    <button class="btn transparent" id="sign-in-btn">
+                        Create Room
+                    </button>
+                </div>
+                <img src="/svg/chatbg.svg" class="image" alt="" />
+            </div>
+        </div>
+    </div>
+    <footer>
+        <%- include ('footer') -%>
+    </footer>
+
+    <script src="/js/home.js"></script>
+    <script src="https://kit.fontawesome.com/64d58efce2.js" crossorigin="anonymous"></script>
 </body>
 
 </html>

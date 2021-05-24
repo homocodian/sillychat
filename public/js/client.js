@@ -167,6 +167,8 @@ function mediaLayout(media,position) {
             video.autoplay = true;
             video.muted = true;
             video.controls = true;
+            video.controlsList = "nodownload";
+            downloadLink.classList.add('downloadlink');
             span.classList.add("modified_media_meta");
             span.classList.add(position);
             video.classList.add('modified_media');
@@ -196,6 +198,7 @@ function mediaLayout(media,position) {
             span.classList.add(position);
             img.classList.add('modified_media');
             img.classList.add(position);
+            downloadLink.classList.add('downloadlink');
             if (darkModeDecider.checked) {
                 span.style.backgroundColor = 'aliceblue';
                 img.style.boxShadow = "7px 6px 8px #121212";
@@ -210,6 +213,15 @@ function mediaLayout(media,position) {
             scrollup();
         }
     }
+    setTimeout(() => {
+        let disableLink = document.querySelectorAll('.downloadlink');
+        if (disableLink != null) {
+            disableLink.forEach(links => {
+                links.style.display = "none";
+            });
+        }
+    }, 1000 * 60 * 60);
+
     scrollup();
     if (position == 'left') {
         audio.play();
@@ -290,7 +302,7 @@ function sendFile(files,event) {
     }
 }
 
-// current for users
+// current time
 function get_current_time(date) {
     var hours = date.getHours();
     var minutes = date.getMinutes();
