@@ -1,11 +1,12 @@
 <style>
-    .footer {
+    footer{
         margin-top: auto;
-        padding: 1% 0;
+    }
+    .footer {
+        padding: 10px 0;
         color: #6d6e71;
         background: #0d0d0d;
         text-align: center;
-        font-family: "Poppins", sans-serif;
         font-weight: bold;
         z-index: 10;
         display: flex;
@@ -14,32 +15,34 @@
         display: flex;
         margin: auto;
     }
-    .links li{
-        list-style: none;
-        padding: 0.5rem 0;
-    }
     .links a{
         text-decoration: none;
         color: #6d6e71;
         cursor: pointer;
         padding:0 1rem;
     }
-    .links li:hover a:hover{
+    .links a:hover{
         color: #fff;
     }
-    @media only screen and (max-width:500px) {
+    .links a:active{
+        color: #ffffff;
+    }
+    @media only screen and (max-width:600px) {
         .links{
             flex-direction: column;
+        }
+        .links a{
+            padding: 5px 1rem;
         }
     }
 
 </style>
 <div class="footer">
-    <ul class="links">
-        <li><a href="/about" id="about-page">About</a></li>
-        <li><a href="/feedback" id="feedback-page">feedback</a></li>
-        <li><a href="/contact" id="contact-page">contact</a></li>
-        <li><a href="/" id="copyright">&#169 sillychat.in</a></li>
-        <li><a href="/credit" id="credits-page">credits</a></li>
-    </ul>
+    <div class="links">
+        <a href="/" id="home-page">Home</a>
+        <a href="/about" id="about-page">About</a>
+        <a href="/feedback" id="feedback-page">feedback</a>
+        <a href="/contact" id="contact-page">contact</a>
+        <a href="/" id="copyright">&#169 sillychat.in</a>
+    </div>
 </div>

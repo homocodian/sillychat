@@ -19,6 +19,10 @@ const multer = require('multer');
 const path = require('path');
 // fs
 const fs = require('fs');
+//this mail take req and res
+const mail = require("./utils/mailer.js");
+// this send email only
+const simplemail = require('./utils/simplemail.js');
 
 // multer config
 const storage =  require('./utils/storage');
@@ -82,13 +86,16 @@ let cleanupTimer = setInterval(async () => {
                  if (info.mtimeMs <= oneHourOld) {
                      fsp.unlink(fullName).catch(err => {
                          // log error, but continue
-                         console.log(`Can't remove temp download file ${fullName}`, err);
+                        //  console.log(`Can't remove temp download file ${fullName}`, err);
+                        simplemail("Sillychat server ALERT!",`Server failed while deleting file please check server
+                        Error message : ${err}`);
                      });
                  }
              }
         }
     } catch(e) {
-        console.log(e);
+        simplemail("Sillychat server ALERT!",`Server failed while deleting file please check server 
+        error message : ${e}`);
     }
     
 }, oneHour);
@@ -98,12 +105,38 @@ cleanupTimer.unref();
 
 // rendering home page
 app.get('/', (req, res) => {
-    res.render('home',{ rooms: rooms, findingError:req.flash('errFinding'), roomDoesNotExist:req.flash('roomDoesNotExist'), roomExistence:req.flash('roomExist'),unauthorizedToken:req.flash('unauthorisedToken'),authentication:req.flash('reqAuthentication'),incorrect:req.flash('incorrectPassword')});
+    res.render('home',{ rooms: rooms, findingError:req.flash('errFinding'), roomDoesNotExist:req.flash('roomDoesNotExist'), roomExistence:req.flash('roomExist'),unauthorizedToken:req.flash('unauthorisedToken'),authentication:req.flash('reqAuthentication'),incorrect:req.flash('incorrectPassword'),mailingError:req.flash('emailError')});
 });
 
 // about page
 app.get('/about',(req,res)=>{
     res.render('about')
+})
+
+// about page
+app.get('/contact',(req,res)=>{
+    res.render('contact')
+})
+
+// about page
+app.get('/feedback',(req,res)=>{
+    res.render("feedback")
+})
+
+// contact request from users
+app.post('/contactSillychat',(req,res)=>{
+    let subject = `${String(req.body.name)} contacted you about sillychat`;
+    let text = `Sender email : ${String(req.body.email)}
+    reason : ${String(req.body.user_message)}`;
+    mail(req,res,subject,text);
+})
+
+// feedback from user
+app.post('/sendFeedback',(req,res)=>{
+    let subject = `${String(req.body.name)} sent you feedback`;
+    let text = `Sender email : ${String(req.body.email)}
+    feedback : ${String(req.body.user_feedback)}`;
+    mail(req,res,subject,text);
 })
 
 // redirecting to room
@@ -140,7 +173,7 @@ app.post("/api/sillychat/uploadfiles", (req, res) => {
     });
 });
 
-//posting all rooms necessary details to the server
+//posting all rooms names to the server
 async function postRooms(req,res,next) {
     if (rooms[req.body.room] != null) {
         req.flash('roomExist','Given room name already exists!')
@@ -188,10 +221,12 @@ function authenticateRooms(req,res,next) {
                 }
             }
         })
-    } else if (authenticate === true) {
+    } 
+    else if (authenticate === true) {
         authenticate = false;
         res.render('room', { roomName: req.params.room });
-    } else {
+    } 
+    else {
         req.flash('reqAuthentication','We could not verify your credentials. Please double-check and try again.');
         res.redirect('/');
     }
@@ -256,11 +291,21 @@ io.on('connection', (socket) => {
 
     // sending and receiving message
     socket.on('send', (room, message) => {
-        socket.to(room).broadcast.emit('receive',formatMessage(rooms[room].users[socket.id],message))
+        check_room = rooms[room];
+        if (check_room == undefined) {
+            io.to(socket.id).emit('errorOnRoom',formatMessage(botName,"This room is no longer be able to send and receive messages, please leave this room and join another one."));
+            return
+        }
+        socket.to(room).broadcast.emit('receive',formatMessage(rooms[room].users[socket.id],String(message)));
     });
     
     // receiving and sending media
     socket.on('media', (Username,roomName,media) => {
+        check_room = rooms[room];
+        if (check_room == undefined) {
+            io.to(socket.id).emit('errorOnRoom',formatMessage(botName,"This room is no longer be able to send and receive messages, please leave this room and join another one."));
+            return
+        }
         socket.to(roomName).emit('media', formatMessage(Username,media));
     });
     
@@ -290,7 +335,8 @@ function deleteRoom(room) {
         const deleteRoom = {room: room}
         roomInfo.deleteOne(deleteRoom, (error) => {
             if (error) {
-                console.log(error.error);
+                // console.log(error.error);
+                return;
             } else {
                 console.log(`${room} successfully removed!`);
                 delete rooms[room]

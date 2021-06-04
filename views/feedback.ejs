@@ -1,0 +1,27 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta http-equiv="X-UA-Compatible" content="IE=edge">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>sillychat feedback</title>
+    <link rel="stylesheet" href="/css/feedback.css">
+</head>
+<body>
+    <div class="feedback-form">
+        <form action="/sendFeedback" method="post" id="user-feedback-form">
+            <h5>Please give us feedback that would be really helpful for us to improve this service.</h5>
+            <label for="name">Name</label>
+            <input name="name" id="name" type="text" placeholder="Your name" required>
+            <label for="email">E-mail</label>
+            <input name="email" id="email" type="email" placeholder="Your Email" required>
+            <label for="feedback">Feedback</label>
+            <textarea name="user_feedback" id="feedback" cols="30" rows="10" placeholder="Your feedback" required></textarea>
+            <button id="send-button" type="submit">Send</button>
+        </form>
+    </div>
+    <footer>
+        <%- include ('footer') -%>
+    </footer>
+</body>
+</html>

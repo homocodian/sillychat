@@ -11,7 +11,7 @@
     <link rel="preconnect" href="https://fonts.gstatic.com">
     <link href="https://fonts.googleapis.com/css2?family=Noto+Sans+JP&display=swap" rel="stylesheet">
     <link rel="stylesheet" href="/css/room.css">
-    <link rel="stylesheet" href="/css/resposive.css">
+    <link rel="stylesheet" href="/css/room_resposive.css">
     <link rel="stylesheet" href="/css/emojionearea.min.css">
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/5.10.2/css/all.min.css">
     <script>
@@ -111,7 +111,7 @@
     <!-- setting-overlay  -->
     <div id="setting-overlay">
         <div id="setting-menu">
-            <Div class="setting-options">
+            <div class="setting-options">
                 <div class="close-button-setting-menu">
                     <div style="display: inline-block;" id="close-button" onclick="open_setting()" ><b>X</b></div>
                 </div>
@@ -134,7 +134,7 @@
                         </label>
                     </div>
                 </div>
-            </Div>
+            </div>
         </div>
     </div>
 
@@ -142,11 +142,33 @@
         <h1>Not supported in this resolution</h1>
     </div>
     <!-- jquery cdn load  -->
-    <script src="https://code.jquery.com/jquery-3.5.1.min.js" integrity="sha256-9/aliU8dGd2tb6OSsuzixeV4y/faTqgFtohetphbbj0=" crossorigin="anonymous"></script>
+    <script src="https://code.jquery.com/jquery-3.6.0.min.js" integrity="sha256-/xUj+3OJU5yExlq6GSYGSHk7tPXikynS7ogEvDej/m4=" crossorigin="anonymous"></script>
     <script src="/js/emojionearea.min.js"></script>
     <script type="text/javascript">
         $(document).ready(function() {
-            $("#message-input").emojioneArea();
+            $("#message-input").emojioneArea({
+                pickerPosition: "top",
+                useInternalCDN: true,
+                inline: true,
+                autocomplete: false,
+                attributes: {
+                    spellcheck : true,
+                    autocapitalize : "on",
+                    autocomplete   : "on",
+                },
+                events: {
+                    keyup: function (editor, event) {
+                        if (event.keyCode == '13') {
+                            let text = $("#message-input").data("emojioneArea").getText();
+                            console.log(text);
+                            $("#text-mess").submit(transmit(event));
+                        }
+                    },
+                    change: function (editor, event) {
+                        console.log('event:change');
+                    }
+                }
+            });
         });
     </script>
 </body>

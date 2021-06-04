@@ -20,24 +20,48 @@ var audio = new Audio('Receive.mp3');
 if (broadcast != null) {
     while (true) {
         Username = prompt("Enter you name", "Anonymous");
-        if (Username == null) {
-        alert('Name is necessery');
-        }else{
+        if (Username === "" || Username === 'undefined' || Username == null) {
+            alert('Name is necessery');
+            continue;
+        }
+        if(Username.startsWith(' ',0) || Username.startsWith('_',0) || Username.startsWith('-',0)){
+            alert('Name cannot start with space or underscrore,name should starts with valid character.')
+            continue;
+        }
+        else if(Username.length > 16){
+            alert('Only 16 characters are allowed, please type your name again.');
+            continue;
+        }
+        else{
             socket.emit("new-user-joined", roomName,Username);
             break;
         }
+    }
+
+    function transmit(e) {
+        e.preventDefault();
+        const message = $("#message-input").data("emojioneArea").getText();
+        if(message == "" || message == null){
+            return false;
+        }
+        clientAppend(message, 'right');
+        socket.emit('send', roomName,message);
+        messageInput.value = '';
+        $('#message-input').data('emojioneArea').setText("");
+        $('#message-input').data('emojioneArea').setFocus();
     }
 
     // on form submission 
     form.addEventListener('submit', (e) => {
         e.preventDefault();
         const message = messageInput.value;
-        clientAppend(message, 'right');
-        socket.emit('send', roomName,message);
-        messageInput.value = '';
-        const messageBox = document.querySelector('.emojionearea-editor');
-        messageBox.innerHTML = "";
-        messageBox.focus();
+        if (message != "" || message != null) {
+            clientAppend(message, 'right');
+            socket.emit('send', roomName,message);
+            messageInput.value = '';
+            $('#message-input').data('emojioneArea').setText("");
+            $('#message-input').data('emojioneArea').setFocus();
+        }
     });
 }
 
@@ -76,6 +100,12 @@ socket.on('left', name => {
     append(name, 'left');
 });
 
+// when room was delete and somehow user tries to reconnect
+socket.on('errorOnRoom',serverResponse =>{
+    console.log(serverResponse);
+    append(serverResponse,"left");
+})
+
 
 // // finding users name which are coming from server
 function findUser(Ids) {
@@ -113,7 +143,7 @@ function clientAppend(message,position){
     messageElement.classList.add(position);
     messageElement.innerHTML = `<p class="meta" >You : ${get_current_time(new Date)}</p>
     <p class "text">
-    ${message}
+    ${String(message)}
     </p>`;
     if (darkModeDecider.checked) {
         messageElement.classList.add('darkTextMessageBox');
@@ -130,9 +160,9 @@ const append = (message, position) => {
     const messageElement = document.createElement('div');
     messageElement.classList.add('message');
     messageElement.classList.add(position);
-    messageElement.innerHTML = `<p class="meta">${message.name} : <span> ${message.time}</span></p>
+    messageElement.innerHTML = `<p class="meta">${String(message.name)} : <span> ${String(message.time)}</span></p>
     <p class "text">
-        ${message.text}
+        ${String(message.text)}
     </p>`;
     broadcast.append(messageElement);
     if (darkModeDecider.checked) {
@@ -282,23 +312,23 @@ function sendFile(files,event) {
         return;
     }else{
         loadFile(event);
-    let formData = new FormData;
-    const config = {
-        header : { "content-type" : "multipart/form-data" }
-    }
-    formData.append('file',files[0]);
+        let formData = new FormData;
+        const config = {
+            header : { "content-type" : "multipart/form-data" }
+        }
+        formData.append('file',files[0]);
 
-    axios.post('api/sillychat/uploadfiles',formData,config)
-        .then(response=>{
-            document.getElementById('file-input').value = '';
-            if (response.data.success) {
-                let media = response.data.url;
-                socket.emit('media', Username,roomName,media);
-            }
-        })
-        .catch(err =>{
-            console.warn(err);
-        })
+        axios.post('api/sillychat/uploadfiles',formData,config)
+            .then(response=>{
+                document.getElementById('file-input').value = '';
+                if (response.data.success) {
+                    let media = response.data.url;
+                    socket.emit('media', Username,roomName,media);
+                }
+            })
+            .catch(err =>{
+                console.warn(err);
+            })
     }
 }
 

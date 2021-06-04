@@ -3,10 +3,14 @@
 
 <head>
     <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <meta name="description" content="sillychat.in is the best place for conversation,chatting and discussion if you are worried about your privacy because it does not take anything from you and it is very simple to use, just make password protected room and invite your known persons and start your discussion and for more info visit about page">
     <meta name="viewport" content="width=device-width, initial-scale=1.0" />
     <link rel="shortcut icon" href="../favicon.png" type="image/x-icon">
     <link rel="stylesheet" href="/css/home.css" />
-    <title>Sillychat</title>
+    <title>sillychat.in || Do your conversation, discussion,chatting privately and for more info visit about page
+    </title>
+    <script defer src="/js/home.js"></script>
 </head>
 
 <body>
@@ -19,7 +23,7 @@
                         <%= roomExistence%>
                     </div>
                 <% }%>
-
+                
                 <% if(unauthorizedToken.length> 0) { %>
                     <div class="alert">
                         <span class="closebtn" onclick="this.parentElement.style.display='none';">&times;</span>
@@ -58,17 +62,26 @@
                         <%= incorrect%>
                     </div>
                 <% }%>
-                <form action="/room" method="POST" class="sign-in-form">
+
+                <% if(mailingError.length> 0) { %>
+                    <div class="alert">
+                        <span class="closebtn" onclick="this.parentElement.style.display='none';">&times;</span>
+                        <%= mailingError%>
+                    </div>
+                <% }%>
+                
+                <form action="/room" method="POST" class="sign-in-form" id="validationID">
                     <h2 class="title">Create room</h2>
                     <div class="input-field">
                         <i class="fas fa-user"></i>
                         <input type="text" placeholder="Room Name"
-                            name="room" required />
+                            name="room" required id="roomCreatorName"/>
                     </div>
                     <div class="input-field">
                         <i class="fas fa-lock"></i>
                         <input type="password" name="roomPassword"
-                            placeholder="Password" required />
+                        placeholder="Password" id="passCreator" required />
+                        <i class="fas fa-eye" onclick="showPassword('passCreator')"></i>
                     </div>
                     <input type="submit" value="Create Room"
                         class="btn solid" />
@@ -84,7 +97,8 @@
                     <div class="input-field">
                         <i class="fas fa-lock"></i>
                         <input type="password" placeholder="Password"
-                            name="roomPassword" />
+                            name="roomPassword" id="roomFinderPass" />
+                        <i class="fas fa-eye" onclick="showPassword('roomFinderPass')"></i>
                     </div>
                     <input type="submit" class="btn" value="join" />
                 </form>
@@ -96,7 +110,7 @@
                 <div class="content">
                     <h3>Sillychat</h3>
                     <p>
-                        sillychat.in is the best place for secured conversation and discussion.
+                        sillychat.in is the coolest place for secured conversation and discussion.
                     </p>
                     <button class="btn transparent" id="sign-up-btn">
                         Join Room
@@ -106,7 +120,7 @@
             </div>
             <div class="panel right-panel" id="login">
                 <div class="content">
-                    Create a new private and secured room.
+                    <p id="right-panel-description">sillychat.in is the coolest place for secured conversation and discussion.</p>
                     <br>
                     <button class="btn transparent" id="sign-in-btn">
                         Create Room
@@ -116,12 +130,10 @@
             </div>
         </div>
     </div>
+    
     <footer>
         <%- include ('footer') -%>
     </footer>
-
-    <script src="/js/home.js"></script>
     <script src="https://kit.fontawesome.com/64d58efce2.js" crossorigin="anonymous"></script>
 </body>
-
 </html>

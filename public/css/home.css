@@ -1,5 +1,4 @@
 @import url("https://fonts.googleapis.com/css2?family=Poppins:wght@200;300;400;500;600;700;800&display=swap");
-@import url("https://fonts.googleapis.com/css2?family=Playfair+Display:ital@1&display=swap");
 * {
     margin: 0;
     padding: 0;
@@ -11,7 +10,7 @@ html {
 }
 
 body {
-    min-height: 100%;
+    height: 100%;
     display: flex;
     flex-direction: column;
 }
@@ -25,7 +24,7 @@ input {
     position: relative;
     width: 100%;
     background-color: #fff;
-    min-height: 100vh;
+    height: 100%;
     overflow: hidden;
 }
 
@@ -84,7 +83,7 @@ form.sign-in-form {
     height: 55px;
     border-radius: 55px;
     display: grid;
-    grid-template-columns: 15% 85%;
+    grid-template-columns: 15% 85% 15%;
     padding: 0 0.4rem;
     position: relative;
 }
@@ -97,6 +96,14 @@ form.sign-in-form {
     font-size: 1.1rem;
 }
 
+.input-field .fa-eye{
+    line-height: 55px;
+    position: absolute;
+    right: 30px;
+    text-align: center;
+    cursor: pointer;
+}
+
 .input-field input {
     background: none;
     outline: none;
@@ -105,6 +112,7 @@ form.sign-in-form {
     font-weight: 600;
     font-size: 1.1rem;
     color: #333;
+    width: 84%;
 }
 
 .input-field input::placeholder {
@@ -179,7 +187,9 @@ form.sign-in-form {
     pointer-events: none;
     padding: 3rem 12% 2rem 17%;
 }
-
+#right-panel-description{
+    margin: 4px 0;
+}
 .panel .content {
     color: #fff;
     transition: transform 0.9s ease-in-out;
@@ -254,7 +264,6 @@ form.sign-in-form {
 .alert {
     margin: 3% 20% 0% 20%;
     border-radius: 3px;
-    font-family: "Noto Sans", sans-serif;
     padding: 7px 12px 7px 12px;
     background-color: #f44336;
     color: white;
@@ -282,7 +291,7 @@ form.sign-in-form {
     }
     .signin-signup {
         width: 100%;
-        top: 70%;
+        top: 80%;
         transform: translate(-50%, -100%);
         transition: 1s 0.8s ease-in-out;
     }
@@ -304,7 +313,7 @@ form.sign-in-form {
     .right-panel {
         grid-row: 3 / 4;
         position: absolute;
-        bottom: 65px;
+        bottom: 20px;
     }
     .left-panel {
         grid-row: 1 / 2;

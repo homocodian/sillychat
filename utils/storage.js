@@ -12,7 +12,7 @@ var storage = multer.diskStorage({
     fileFilter: (req, file, cb) => {
         const ext = path.extname(file.originalname);
         if (ext !== '.jpg' && ext !== '.png' && ext !== '.mp4') {
-            return cb(res.send(400).end('only jpg, png and mp4 are allowes'), false);
+            return cb(res.send(400).end('only jpg, png and mp4 are allowed'), false);
         }
         cb(null, true);
     }

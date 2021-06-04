@@ -1,0 +1,37 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8">
+    <meta http-equiv="X-UA-Compatible" content="IE=edge">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>sillychat contact</title>
+    <link rel="stylesheet" href="/css/contact.css">
+</head>
+
+<body>
+    <div class="contact-form">
+        <form action="/contactSillychat" method="post" id="user-contact-form">
+            <h5>Please fill out the necessary details</h5>
+            <label for="name">Name</label>
+            <input name="name" id="name" type="text" placeholder="Your name" required>
+            <label for="email">E-mail</label>
+            <input name="email" id="email" type="email" placeholder="Your Email" required>
+            <label for="message">Message</label>
+            <textarea name="user_message" id="message" cols="30" rows="5" placeholder="Your Message"
+                required></textarea>
+            <button class="btn" type="submit">Send</button>
+            <button class="btn" onclick="openTelegram()" title="https://t.me/sillychat">Contact on telegram</button>
+        </form>
+    </div>
+    <footer>
+        <%- include ('footer') -%>
+    </footer>
+    <script>
+        function openTelegram() {
+            window.open("https://t.me/sillychat");
+        }
+    </script>
+</body>
+
+</html>
