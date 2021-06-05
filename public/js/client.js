@@ -24,16 +24,16 @@ if (broadcast != null) {
             alert('Name is necessery');
             continue;
         }
-        if(Username.startsWith(' ',0) || Username.startsWith('_',0) || Username.startsWith('-',0)){
+        if (Username.startsWith(' ', 0) || Username.startsWith('_', 0) || Username.startsWith('-', 0)) {
             alert('Name cannot start with space or underscrore,name should starts with valid character.')
             continue;
         }
-        else if(Username.length > 16){
+        else if (Username.length > 16) {
             alert('Only 16 characters are allowed, please type your name again.');
             continue;
         }
-        else{
-            socket.emit("new-user-joined", roomName,Username);
+        else {
+            socket.emit("new-user-joined", roomName, Username);
             break;
         }
     }
@@ -41,11 +41,11 @@ if (broadcast != null) {
     function transmit(e) {
         e.preventDefault();
         const message = $("#message-input").data("emojioneArea").getText();
-        if(message == "" || message == null){
+        if (message == "" || message == null) {
             return false;
         }
         clientAppend(message, 'right');
-        socket.emit('send', roomName,message);
+        socket.emit('send', roomName, message);
         messageInput.value = '';
         $('#message-input').data('emojioneArea').setText("");
         $('#message-input').data('emojioneArea').setFocus();
@@ -57,7 +57,7 @@ if (broadcast != null) {
         const message = messageInput.value;
         if (message != "" || message != null) {
             clientAppend(message, 'right');
-            socket.emit('send', roomName,message);
+            socket.emit('send', roomName, message);
             messageInput.value = '';
             $('#message-input').data('emojioneArea').setText("");
             $('#message-input').data('emojioneArea').setFocus();
@@ -71,17 +71,17 @@ socket.on('user-joined', name => {
 });
 
 // room users name
-socket.on('roomUser',Ids =>{
+socket.on('roomUser', Ids => {
     findUser(Ids);
 })
 
 // greeting form server
-socket.on('greeting',greeting =>{
-    append(greeting,'right');
+socket.on('greeting', greeting => {
+    append(greeting, 'right');
 })
 
 // for invitation
-socket.on('invite',(code)=>{
+socket.on('invite', (code) => {
     invitationUrl = code
 });
 
@@ -91,8 +91,8 @@ socket.on('receive', message => {
 });
 
 // media from server
-socket.on('media',media =>{
-    mediaLayout(media,'left');
+socket.on('media', media => {
+    mediaLayout(media, 'left');
 });
 
 // those users who are offline
@@ -101,9 +101,8 @@ socket.on('left', name => {
 });
 
 // when room was delete and somehow user tries to reconnect
-socket.on('errorOnRoom',serverResponse =>{
-    console.log(serverResponse);
-    append(serverResponse,"left");
+socket.on('errorOnRoom', serverResponse => {
+    append(serverResponse, "left");
 })
 
 
@@ -137,14 +136,12 @@ function newUser(name) {
 
 
 // // appending sender message 
-function clientAppend(message,position){
+function clientAppend(message, position) {
     const messageElement = document.createElement('div');
     messageElement.classList.add('message');
     messageElement.classList.add(position);
     messageElement.innerHTML = `<p class="meta" >You : ${get_current_time(new Date)}</p>
-    <p class "text">
-    ${String(message)}
-    </p>`;
+    <p class "text">${String(message).startsWith("https://") ? `<a href=${String(message)} target="_blank">${String(message)}</a>` : `${String(message)}`}</p>`;
     if (darkModeDecider.checked) {
         messageElement.classList.add('darkTextMessageBox');
     }
@@ -161,9 +158,7 @@ const append = (message, position) => {
     messageElement.classList.add('message');
     messageElement.classList.add(position);
     messageElement.innerHTML = `<p class="meta">${String(message.name)} : <span> ${String(message.time)}</span></p>
-    <p class "text">
-        ${String(message.text)}
-    </p>`;
+    <p class "text">${String(message.text).startsWith("https://") ? `<a href=${message.text} target="_blank">${message.text}</a>` : `${String(message.text)}`}</p>`;
     broadcast.append(messageElement);
     if (darkModeDecider.checked) {
         messageElement.classList.add('darkTextMessageBox');
@@ -174,18 +169,18 @@ const append = (message, position) => {
     scrollup()
     if (position == 'left') {
         if (!muteSound.checked) {
-            audio.play().catch(()=>{
+            audio.play().catch(() => {
                 console.warn('User interation needed with dom');
             })
         }
     }
-    
+
 }
 
 // media view layout
-function mediaLayout(media,position) {
-    if (media.text.substring(0,8) === "uploads/") {
-        if (media.text.substring(media.text.length -3,media.text.length) === "mp4") {
+function mediaLayout(media, position) {
+    if (media.text.substring(0, 8) === "uploads/") {
+        if (media.text.substring(media.text.length - 3, media.text.length) === "mp4") {
             const div = document.createElement('div');
             const span = document.createElement('span');
             const downloadLink = document.createElement('a');
@@ -208,18 +203,21 @@ function mediaLayout(media,position) {
                 video.style.boxShadow = "7px 6px 8px #121212";
             }
             else if (redcherryDecider.checked) {
-                video.style.backgroundColor ="#66afe999";
+                video.style.backgroundColor = "#66afe999";
                 video.style.boxShadow = "7px 6px 8px #b76666";
             }
             span.appendChild(downloadLink);
             div.append(span);
-            broadcast.append(div,video);
+            broadcast.append(div, video);
             scrollup();
-        }else{
+        } else {
             const div = document.createElement('div');
             const span = document.createElement('span');
             const downloadLink = document.createElement('a');
             const img = document.createElement('img');
+            img.onclick = function () {
+                openFullscreen(this);
+            }
             downloadLink.href = `http://localhost:3000/${media.text}`;
             downloadLink.innerHTML = `<i class="fas fa-download" style="margin:0px 0px 0px 10px"></i>`;
             span.innerHTML = `${media.name}: ${media.time}`;
@@ -234,12 +232,11 @@ function mediaLayout(media,position) {
                 img.style.boxShadow = "7px 6px 8px #121212";
             }
             else if (redcherryDecider.checked) {
-                video.style.backgroundColor ="#66afe999";
                 img.style.boxShadow = "7px 6px 8px #b76666";
             }
             span.appendChild(downloadLink);
             div.append(span);
-            broadcast.append(div,img);
+            broadcast.append(div, img);
             scrollup();
         }
     }
@@ -259,9 +256,9 @@ function mediaLayout(media,position) {
 }
 
 //media for client
-var loadFile = function(event) {
+var loadFile = function (event) {
     var reader = new FileReader();
-    reader.onload = function(){
+    reader.onload = function () {
         let data = `${reader.result}`;
         let extractedData = data.split(";");
         let extName = extractedData[0].split("/");
@@ -277,12 +274,15 @@ var loadFile = function(event) {
             video.src = reader.result;
             if (darkModeDecider.checked) {
                 video.style.boxShadow = "7px 6px 8px #121212";
-            }else if (redcherryDecider.checked) {
+            } else if (redcherryDecider.checked) {
                 video.style.boxShadow = "7px 6px 8px #b76666";
             }
             broadcast.append(video);
-        }else{
+        } else {
             const img = document.createElement('img');
+            img.onclick = function () {
+                openFullscreen(this);
+            }
             img.alt = 'image';
             img.classList.add('modified_media');
             img.classList.add('right');
@@ -290,7 +290,7 @@ var loadFile = function(event) {
             img.src = reader.result;
             if (darkModeDecider.checked) {
                 img.style.boxShadow = "7px 6px 8px #121212";
-            }else if (redcherryDecider.checked) {
+            } else if (redcherryDecider.checked) {
                 img.style.boxShadow = "7px 6px 8px #b76666";
             }
             broadcast.append(img);
@@ -304,29 +304,29 @@ var loadFile = function(event) {
 };
 
 //media upload
-function sendFile(files,event) {
+function sendFile(files, event) {
     maxSize = 10602144;
     if (files[0].size > maxSize) {
         alert("Try choosing file below 10 mb");
         document.getElementById('file-input').value = '';
         return;
-    }else{
+    } else {
         loadFile(event);
         let formData = new FormData;
         const config = {
-            header : { "content-type" : "multipart/form-data" }
+            header: { "content-type": "multipart/form-data" }
         }
-        formData.append('file',files[0]);
+        formData.append('file', files[0]);
 
-        axios.post('api/sillychat/uploadfiles',formData,config)
-            .then(response=>{
+        axios.post('api/sillychat/uploadfiles', formData, config)
+            .then(response => {
                 document.getElementById('file-input').value = '';
                 if (response.data.success) {
                     let media = response.data.url;
-                    socket.emit('media', Username,roomName,media);
+                    socket.emit('media', Username, roomName, media);
                 }
             })
-            .catch(err =>{
+            .catch(err => {
                 console.warn(err);
             })
     }
@@ -339,7 +339,7 @@ function get_current_time(date) {
     var ampm = hours >= 12 ? 'pm' : 'am';
     hours = hours % 12;
     hours = hours ? hours : 12; // the hour '0' should be '12'
-    minutes = minutes < 10 ? '0'+minutes : minutes;
+    minutes = minutes < 10 ? '0' + minutes : minutes;
     var currentTime = hours + ':' + minutes + ' ' + ampm;
     return currentTime;
 }
@@ -365,8 +365,8 @@ function openForm(state) {
     if (state) {
         overlayEle.style.display = 'flex';
         const url = window.location.href.split('/');
-        const modifiedUrl = url[0]+'//'+url[1]+url[2];
-        socket.emit('generateInvitationCode',roomName,modifiedUrl);
+        const modifiedUrl = url[0] + '//' + url[1] + url[2];
+        socket.emit('generateInvitationCode', roomName, modifiedUrl);
     } else {
         overlayEle.style.display = 'none';
     }
@@ -386,10 +386,12 @@ function darkMode() {
     let dark_invite_menu = document.getElementById('invitation-popup');
     var media = document.querySelectorAll('.modified_media');
     var media_meta = document.querySelectorAll('.modified_media_meta');
+    var image_icon = document.getElementById("send-image-button");
     if (darkModeDecider.checked) {
         document.body.classList.add('dark');
         broadcast.classList.add('darkMessageBox');
         user_container.classList.add('dark-user-container');
+        image_icon.style.color = "gray";
         dark_invite_menu.classList.add('dark-invitation-popup');
         dark_setting_menu.classList.add('dark-setting-menu');
         messageBox.forEach(box => {
@@ -409,6 +411,7 @@ function darkMode() {
         document.body.classList.remove('dark');
         broadcast.classList.remove('darkMessageBox');
         user_container.classList.remove('dark-user-container');
+        image_icon.style.color = "";
         dark_invite_menu.classList.remove('dark-invitation-popup');
         dark_setting_menu.classList.remove('dark-setting-menu');
         messageBox.forEach(box => {
@@ -495,7 +498,7 @@ function openwhatsapp() {
 // facebook invitation
 function openfacebook() {
     if (invitationUrl != null) {
-        window.open("https://www.facebook.com/sharer/sharer.php?u=" + encodeURIComponent(invitationUrl), "pop", "width=600, height=400, scrollbars=no"); 
+        window.open("https://www.facebook.com/sharer/sharer.php?u=" + encodeURIComponent(invitationUrl), "pop", "width=600, height=400, scrollbars=no");
     }
 }
 
@@ -518,5 +521,16 @@ function opentelegram() {
 function openmail() {
     if (invitationUrl != null) {
         window.open(`mailto:?subject= I wants to discuss something private&body=click on the link to join the conversation  >>>>>> ${invitationUrl}`);
+    }
+}
+
+// fullscreen
+function openFullscreen(elem) {
+    if (elem.requestFullscreen) {
+        elem.requestFullscreen();
+    } else if (elem.webkitRequestFullscreen) { /* Safari */
+        elem.webkitRequestFullscreen();
+    } else if (elem.msRequestFullscreen) { /* IE11 */
+        elem.msRequestFullscreen();
     }
 }

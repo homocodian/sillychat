@@ -7,7 +7,7 @@ const box_for_user = document.querySelector('.user-container');
 const overlay = document.getElementById('overlay');
 const invitation_close_button = document.querySelector('div#close b');
 
-invitation_close_button.addEventListener('click',()=>{
+invitation_close_button.addEventListener('click', () => {
     overlay.style.display = "none"
 });
 

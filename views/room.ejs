@@ -83,10 +83,10 @@
 
         <!-- message input bar  -->
         <form method="post" id="text-mess">
-            <input type="text" name="message" id="message-input" class="input" placeholder="Type a message..." style="display: none;" required>
+            <input type="text" name="message" id="message-input" class="input" placeholder="Type a message..." required>
             <div class="image-upload">
                 <label id="file-image-logo" for="file-input" >
-                    <img src="https://img.icons8.com/plasticine/100/000000/image.png" id="send-image-button"/>
+                    <i class="fas fa-camera" id="send-image-button"></i>
                 </label>
                 <input id="file-input" name="file" type="file" accept="image/x-png,image/gif,image/jpeg,video/mp4" onchange="sendFile(files,event)"/>
             </div>
@@ -146,29 +146,29 @@
     <script src="/js/emojionearea.min.js"></script>
     <script type="text/javascript">
         $(document).ready(function() {
-            $("#message-input").emojioneArea({
-                pickerPosition: "top",
-                useInternalCDN: true,
-                inline: true,
-                autocomplete: false,
-                attributes: {
-                    spellcheck : true,
-                    autocapitalize : "on",
-                    autocomplete   : "on",
-                },
-                events: {
-                    keyup: function (editor, event) {
-                        if (event.keyCode == '13') {
-                            let text = $("#message-input").data("emojioneArea").getText();
-                            console.log(text);
-                            $("#text-mess").submit(transmit(event));
-                        }
+            if ($(window).width() > 418) {
+                $("#message-input").emojioneArea({
+                    pickerPosition: "top",
+                    useInternalCDN: true,
+                    inline: true,
+                    autocomplete: false,
+                    attributes: {
+                        spellcheck : true,
+                        autocapitalize : "on",
+                        autocomplete   : "off",
                     },
-                    change: function (editor, event) {
-                        console.log('event:change');
+                    events: {
+                        keyup: function (editor, event) {
+                            if (event.keyCode == '13') {
+                                $("#text-mess").submit(transmit(event));
+                            }
+                        },
+                        // change: function (editor, event) {
+                        //     console.log('event:change');
+                        // }
                     }
-                }
-            });
+                });
+            }
         });
     </script>
 </body>

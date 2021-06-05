@@ -176,7 +176,7 @@ app.post("/api/sillychat/uploadfiles", (req, res) => {
 //posting all rooms names to the server
 async function postRooms(req,res,next) {
     if (rooms[req.body.room] != null) {
-        req.flash('roomExist','Given room name already exists!')
+        req.flash('roomExist','Room already has been taken');
         return res.redirect('/')
     }
     rooms[req.body.room] = { users: {} }
@@ -203,7 +203,7 @@ async function postRooms(req,res,next) {
 
 function authenticateRooms(req,res,next) {
     if (rooms[req.params.room] == null) {
-        req.flash('roomDoesNotExist','Room does not exist.');
+        req.flash('roomDoesNotExist','No such room exists');
         return res.redirect('/')
     }
     if (req.query.t != undefined) {
@@ -256,7 +256,7 @@ function getRoom(req, res, next) {
                 }
 
             } catch (error) {
-                req.flash('errFinding','Error while finding room or it did not exist!');
+                req.flash('errFinding','No such room exists');
                 res.redirect('/');
             }
         }
@@ -284,6 +284,10 @@ io.on('connection', (socket) => {
 
     //invitation code
     socket.on('generateInvitationCode',(room,modifiedUrl)=>{
+        if (rooms[room] == undefined) {
+            io.to(socket.id).emit('errorOnRoom',formatMessage(botName,"This room is no longer be able to send and receive messages, please leave this room and join another one."));
+            return
+        }
         const accessToken = jwt.sign({room:room},process.env.ACCESS_TOKEN_SECRET,{ expiresIn: 60*5 });
         const newUrl = modifiedUrl + '/' + room + '?t=' + accessToken;
         io.to(socket.id).emit('invite',newUrl);
@@ -291,8 +295,7 @@ io.on('connection', (socket) => {
 
     // sending and receiving message
     socket.on('send', (room, message) => {
-        check_room = rooms[room];
-        if (check_room == undefined) {
+        if (rooms[room] == undefined) {
             io.to(socket.id).emit('errorOnRoom',formatMessage(botName,"This room is no longer be able to send and receive messages, please leave this room and join another one."));
             return
         }
@@ -301,8 +304,7 @@ io.on('connection', (socket) => {
     
     // receiving and sending media
     socket.on('media', (Username,roomName,media) => {
-        check_room = rooms[room];
-        if (check_room == undefined) {
+        if (rooms[roomName] == undefined) {
             io.to(socket.id).emit('errorOnRoom',formatMessage(botName,"This room is no longer be able to send and receive messages, please leave this room and join another one."));
             return
         }
