@@ -1,5 +1,5 @@
 // socket connection
-const socket = io("http://localhost:3000");
+const socket = io("//localhost:3000");
 
 // neccessary variables
 let Username = null;

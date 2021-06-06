@@ -5,8 +5,7 @@
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <meta name="description" content="sillychat.in is the best place for conversation,chatting and discussion if you are worried about your privacy because it does not take anything from you and it is very simple to use, just make password protected room and invite your known persons and start your discussion and for more info visit about page">
-    <title>sillychat.in || Do your conversation, discussion,chatting privately and for more info visit about page
-    </title>
+    <title>sillychat.in || Do your conversation, discussion,chatting privately and for more info visit about page</title>
     <link rel="shortcut icon" href="../favicon.png" type="image/x-icon">
     <link rel="preconnect" href="https://fonts.gstatic.com">
     <link href="https://fonts.googleapis.com/css2?family=Noto+Sans+JP&display=swap" rel="stylesheet">
@@ -14,10 +13,8 @@
     <link rel="stylesheet" href="/css/room_resposive.css">
     <link rel="stylesheet" href="/css/emojionearea.min.css">
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/5.10.2/css/all.min.css">
-    <script>
-        const roomName = "<%= roomName%>"
-    </script>
-    <script defer src="http://localhost:3000/socket.io/socket.io.js"></script>
+    <script>const roomName = "<%= roomName%>";</script>
+    <script defer src="//localhost:3000/socket.io/socket.io.js"></script>
     <script defer src="https://cdn.jsdelivr.net/npm/axios/dist/axios.min.js"></script>
     <script defer src="/js/client.js"></script>
     <script defer src="/js/responsive.js"></script>
@@ -155,7 +152,7 @@
                     attributes: {
                         spellcheck : true,
                         autocapitalize : "on",
-                        autocomplete   : "off",
+                        autocomplete   : "on",
                     },
                     events: {
                         keyup: function (editor, event) {

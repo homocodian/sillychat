@@ -11,7 +11,7 @@
 
 <body>
     <div class="contact-form">
-        <form action="/contactSillychat" method="post" id="user-contact-form">
+        <form action="/contactSillychat" method="post" id="user-contact-form" >
             <h5>Please fill out the necessary details</h5>
             <label for="name">Name</label>
             <input name="name" id="name" type="text" placeholder="Your name" required>
@@ -20,8 +20,8 @@
             <label for="message">Message</label>
             <textarea name="user_message" id="message" cols="30" rows="5" placeholder="Your Message"
                 required></textarea>
-            <button class="btn" type="submit">Send</button>
-            <button class="btn" onclick="openTelegram()" title="https://t.me/sillychat">Contact on telegram</button>
+            <button class="btn" type="submit" title="send">Send</button>
+            <button class="btn" onclick="openTelegram()" title="@sillychat">Contact on telegram</button>
         </form>
     </div>
     <footer>

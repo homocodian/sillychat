@@ -191,7 +191,7 @@ div.message.darkTextMessageBox {
 /* text message input box  */
 
 #message-input {
-    height: 50px;
+    height: 40px;
     width: 100%;
     margin-top: 5px;
     outline: none;

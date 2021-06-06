@@ -67,7 +67,7 @@ app.use(flash());
 // room varible to handle rooms
 const rooms = {}
 let authenticate = false;
-const botName = 'Bot';
+const botName = 'Sillychat';
 
 const fsp = require('fs').promises;
 const oneHour = 1000 * 60 * 60;
@@ -125,6 +125,11 @@ app.get('/feedback',(req,res)=>{
 
 // contact request from users
 app.post('/contactSillychat',(req,res)=>{
+    const re = /^(([^<>()[\]\\.,;:\s@"]+(\.[^<>()[\]\\.,;:\s@"]+)*)|(".+"))@((\[[0-9]{1,3}\.[0-9]{1,3}\.[0-9]{1,3}\.[0-9]{1,3}\])|(([a-zA-Z\-0-9]+\.)+[a-zA-Z]{2,}))$/;
+    if(!re.test(String(req.body.email).toLowerCase())){
+        req.flash("emailError","Your emai was not valid");
+        res.redirect('/');
+    }
     let subject = `${String(req.body.name)} contacted you about sillychat`;
     let text = `Sender email : ${String(req.body.email)}
     reason : ${String(req.body.user_message)}`;
@@ -133,6 +138,11 @@ app.post('/contactSillychat',(req,res)=>{
 
 // feedback from user
 app.post('/sendFeedback',(req,res)=>{
+    const re = /^(([^<>()[\]\\.,;:\s@"]+(\.[^<>()[\]\\.,;:\s@"]+)*)|(".+"))@((\[[0-9]{1,3}\.[0-9]{1,3}\.[0-9]{1,3}\.[0-9]{1,3}\])|(([a-zA-Z\-0-9]+\.)+[a-zA-Z]{2,}))$/;
+    if(!re.test(String(req.body.email).toLowerCase())){
+        req.flash("emailError","Your emai was not valid");
+        res.redirect('/');
+    }
     let subject = `${String(req.body.name)} sent you feedback`;
     let text = `Sender email : ${String(req.body.email)}
     feedback : ${String(req.body.user_feedback)}`;
